@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6 vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-7B --reasoning-parser deepseek_r1
