@@ -3,6 +3,7 @@ import json
 import re
 import time
 import requests
+import argparse
 from typing import Optional
 from tqdm import tqdm
 from datasets import load_dataset
@@ -10,8 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # vLLM API endpoint and model path
 VLLM_API_URL = "http://localhost:8000/v1/completions"
-MODEL_PATH = "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
-#MODEL_PATH   = os.path.join(os.environ["HOME"], "models/Llama-2-7b-hf")
+DEFAULT_MODEL_PATH = "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
 
 # ---------------- Extraction ----------------
 def extract_final_answer(text: str) -> Optional[str]:
@@ -51,9 +51,9 @@ def extract_final_answer(text: str) -> Optional[str]:
 # ---------------- Generation ----------------
 def call_vllm_api(prompt: str, max_retries=10, sleep_time=5) -> str:
     payload = {
-        "model": MODEL_PATH,
+        "model": args.model,
         "prompt": prompt,
-        "max_tokens": 1024,
+        "max_tokens": 3072,
         "temperature": 0,
         "top_p": 0.95,
         "stop": None,
@@ -128,8 +128,16 @@ def generate_cot_traces(
         json.dump(cot_samples, f, indent=4, ensure_ascii=False)
 
 # ---------------- Main (MATH-500) ----------------
+def parse_args():
+    p = argparse.ArgumentParser(description="Generate CoT traces via vLLM for MATH-500.")
+    p.add_argument("--model", default=DEFAULT_MODEL_PATH,
+                   help="HF model name or local path (default: %(default)s)")
+    return p.parse_args()
+
+# ---------------- Main (MATH-500) ----------------
 if __name__ == "__main__":
     # Use MATH-500 for eval. Commonly available as lighteval/MATH-500 with fields: problem, solution
+    args = parse_args()
     math500 = load_dataset("HuggingFaceH4/MATH-500", split="test")  # 500 problems
 
     # Generate (or skip if you already have outputs)
@@ -140,6 +148,6 @@ if __name__ == "__main__":
         end_idx=len(math500),
         password=None,
         instruction=None, #"Please reason step by step, and put your final answer within \\boxed{}.",
-        batch_size=100,
-        max_concurrent_requests=100,
+        batch_size=1,
+        max_concurrent_requests=1,
     )

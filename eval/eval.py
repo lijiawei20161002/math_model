@@ -332,10 +332,7 @@ def evaluate(traces_path: str) -> Dict[str, Any]:
     acc_valid = (correct / valid * 100.0) if valid else 0.0
 
     print(f"File: {traces_path}")
-    print(f"  Total:   {total}")
-    print(f"  Valid:   {valid}")
-    print(f"  Correct: {correct}")
-    print(f"  Acc(valid): {acc_valid:.2f}%")
+    print(f"Total:{total}   Valid:{valid}  Correct: {correct}  Acc(valid): {acc_valid:.2f}%")
 
     with open("wrong_cases.json", "w", encoding="utf-8") as f:
         json.dump(wrong_cases, f, indent=2, ensure_ascii=False)
