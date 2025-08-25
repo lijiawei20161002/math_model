@@ -53,7 +53,7 @@ def call_vllm_api(prompt: str, max_retries=10, sleep_time=5) -> str:
     payload = {
         "model": args.model,
         "prompt": prompt,
-        "max_tokens": 51200,
+        "max_tokens": 3072,
         "temperature": 0,
         "top_p": 0.95,
         "stop": None,
@@ -76,8 +76,8 @@ def generate_cot_traces(
     end_idx: int = None,
     password: str = None,
     instruction: str = None,
-    batch_size: int = 100,
-    max_concurrent_requests: int = 100,
+    batch_size: int = 10,
+    max_concurrent_requests: int = 10,
 ):
     end_idx = end_idx or len(dataset_split)
     if os.path.exists(output_path):
@@ -119,7 +119,7 @@ def generate_cot_traces(
                 "ground_truth": dataset_split[idx].get("answer", "")
             })
 
-        if len(cot_samples) - done >= 20:
+        if len(cot_samples) - done >= 10:
             with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(cot_samples, f, indent=4, ensure_ascii=False)
             done = len(cot_samples)
@@ -149,6 +149,6 @@ if __name__ == "__main__":
         end_idx=len(aime),
         password=None,
         instruction=None,  # e.g., "Please reason step by step, and put your final answer within \\boxed{}.",
-        batch_size=20,
-        max_concurrent_requests=20,
+        batch_size=10,
+        max_concurrent_requests=10,
     )
