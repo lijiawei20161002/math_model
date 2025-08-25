@@ -6,7 +6,7 @@ import requests
 import argparse
 from typing import Optional
 from tqdm import tqdm
-from datasets import load_dataset
+from datasets import load_dataset, concatenate_datasets
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # vLLM API endpoint and model path
@@ -53,7 +53,7 @@ def call_vllm_api(prompt: str, max_retries=10, sleep_time=5) -> str:
     payload = {
         "model": args.model,
         "prompt": prompt,
-        "max_tokens": 3072,
+        "max_tokens": 51200,
         "temperature": 0,
         "top_p": 0.95,
         "stop": None,
@@ -95,7 +95,7 @@ def generate_cot_traces(
 
         prompts = []
         for idx in range(batch_start, batch_end):
-            q = dataset_split[idx]["problem"]
+            q = dataset_split[idx]["question"]
             p = q
             if password:
                 p = f"{password} {q} {password}\n"
@@ -113,10 +113,10 @@ def generate_cot_traces(
         for i, idx in enumerate(range(batch_start, batch_end)):
             text = results[i]
             cot_samples.append({
-                "question":    dataset_split[idx]["problem"],
+                "question":    dataset_split[idx]["question"],
                 "output":      text,
                 "final_answer": extract_final_answer(text),
-                "ground_truth": dataset_split[idx].get("solution", "")
+                "ground_truth": dataset_split[idx].get("answer", "")
             })
 
         if len(cot_samples) - done >= 20:
@@ -127,27 +127,28 @@ def generate_cot_traces(
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(cot_samples, f, indent=4, ensure_ascii=False)
 
-# ---------------- Main (MATH-500) ----------------
+# ---------------- Main (AIME) ----------------
 def parse_args():
-    p = argparse.ArgumentParser(description="Generate CoT traces via vLLM for MATH-500.")
+    p = argparse.ArgumentParser(description="Generate CoT traces via vLLM for AIME.")
     p.add_argument("--model", default=DEFAULT_MODEL_PATH,
                    help="HF model name or local path (default: %(default)s)")
     return p.parse_args()
 
-# ---------------- Main (MATH-500) ----------------
 if __name__ == "__main__":
-    # Use MATH-500 for eval. Commonly available as lighteval/MATH-500 with fields: problem, solution
+    # Use AIME dataset from competition_math (aime_train/aime_test)
     args = parse_args()
-    math500 = load_dataset("HuggingFaceH4/MATH-500", split="test")  # 500 problems
+    aime_i = load_dataset("opencompass/AIME2025", "AIME2025-I", split="test")
+    aime_ii = load_dataset("opencompass/AIME2025", "AIME2025-II", split="test")
+    aime = concatenate_datasets([aime_i, aime_ii])
 
     # Generate (or skip if you already have outputs)
     generate_cot_traces(
-        dataset_split=math500,
-        output_path="traces_math500.json",
+        dataset_split=aime,
+        output_path="traces_aime25.json",
         start_idx=0,
-        end_idx=len(math500),
+        end_idx=len(aime),
         password=None,
-        instruction=None, #"Please reason step by step, and put your final answer within \\boxed{}.",
-        batch_size=1,
-        max_concurrent_requests=1,
+        instruction=None,  # e.g., "Please reason step by step, and put your final answer within \\boxed{}.",
+        batch_size=20,
+        max_concurrent_requests=20,
     )
