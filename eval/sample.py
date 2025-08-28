@@ -87,7 +87,7 @@ def call_vllm_api_batch(
 
     for _ in range(max_retries):
         try:
-            resp = requests.post(VLLM_API_URL, headers=headers, json=payload, timeout=1000)
+            resp = requests.post(VLLM_API_URL, headers=headers, json=payload, timeout=10000)
             if resp.ok:
                 data = resp.json()
                 return [c.get("text", "") for c in data.get("choices", [])]
@@ -191,7 +191,7 @@ def parse_args():
         description="Generate CoT traces via vLLM for AIME — record ALL samples per question (no majority vote)."
     )
     p.add_argument("--model", default=DEFAULT_MODEL_PATH, help="HF model name or local path")
-    p.add_argument("--samples", type=int, default=30, help="Number of samples per question (recorded individually)")
+    p.add_argument("--samples", type=int, default=100, help="Number of samples per question (recorded individually)")
     p.add_argument("--temperature", type=float, default=0.6, help="Sampling temperature")
     p.add_argument("--top_p", type=float, default=0.95, help="Nucleus sampling p")
     p.add_argument("--batch_size", type=int, default=1, help="Questions per batch")
