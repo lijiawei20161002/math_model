@@ -191,12 +191,12 @@ def parse_args():
         description="Generate CoT traces via vLLM for AIME — record ALL samples per question (no majority vote)."
     )
     p.add_argument("--model", default=DEFAULT_MODEL_PATH, help="HF model name or local path")
-    p.add_argument("--samples", type=int, default=100, help="Number of samples per question (recorded individually)")
+    p.add_argument("--samples", type=int, default=1000, help="Number of samples per question (recorded individually)")
     p.add_argument("--temperature", type=float, default=0.6, help="Sampling temperature")
     p.add_argument("--top_p", type=float, default=0.95, help="Nucleus sampling p")
     p.add_argument("--batch_size", type=int, default=1, help="Questions per batch")
     p.add_argument("--max_concurrency", type=int, default=1, help="Concurrent requests to vLLM")
-    p.add_argument("--max_tokens", type=int, default=30720, help="Max tokens to generate per sample")
+    p.add_argument("--max_tokens", type=int, default=10240, help="Max tokens to generate per sample")
     p.add_argument("--output", default="traces_aime25_all_samples.json", help="Output JSON path")
     return p.parse_args()
 
