@@ -1,6 +1,8 @@
 """
 Visualization of Different Chain-of-Thought Paths for Math Problems
 Shows how different reasoning strategies lead to different answers and latent representations
+
+This script uses real API calls to Claude and OpenAI models to generate diverse reasoning paths.
 """
 
 import numpy as np
@@ -10,6 +12,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import seaborn as sns
 from matplotlib.patches import FancyBboxPatch
 import textwrap
+import os
+import argparse
+import json
+from api_clients import DiverseReasoningGenerator
 
 # Set style
 sns.set_style("whitegrid")
@@ -18,153 +24,80 @@ plt.rcParams['figure.figsize'] = (20, 12)
 # Define the math problem
 PROBLEM = "If a store sells apples for $3 each and oranges for $2 each, and John buys 5 fruits spending exactly $13, how many apples did he buy?"
 
-# Define 10 different chain-of-thought reasoning paths
-reasoning_paths = [
-    {
-        "name": "Algebraic (Correct)",
-        "steps": [
-            "Let a = apples, o = oranges",
-            "Equation 1: a + o = 5 (total fruits)",
-            "Equation 2: 3a + 2o = 13 (total cost)",
-            "From eq1: o = 5 - a",
-            "Substitute: 3a + 2(5-a) = 13",
-            "3a + 10 - 2a = 13",
-            "a = 3",
-            "Check: 3 apples ($9) + 2 oranges ($4) = $13 ✓"
-        ],
-        "answer": 3,
-        "confidence": 0.95,
-        "category": "systematic"
-    },
-    {
-        "name": "Trial and Error (Correct)",
-        "steps": [
-            "Try 1 apple: $3, need 4 oranges=$8, total=$11 ✗",
-            "Try 2 apples: $6, need 3 oranges=$6, total=$12 ✗",
-            "Try 3 apples: $9, need 2 oranges=$4, total=$13 ✓",
-            "3 apples + 2 oranges = 5 fruits ✓",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.88,
-        "category": "empirical"
-    },
-    {
-        "name": "Pattern Recognition (Correct)",
-        "steps": [
-            "Notice: Need $13 from 5 fruits",
-            "Average price would be $13/5 = $2.60",
-            "Oranges=$2, Apples=$3, so need more apples",
-            "Price difference: $1 per substitution",
-            "All oranges: 5×$2=$10, need $3 more",
-            "Replace 3 oranges with 3 apples: adds $3",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.82,
-        "category": "heuristic"
-    },
-    {
-        "name": "Averaging Error",
-        "steps": [
-            "Average fruit price: ($3+$2)/2 = $2.50",
-            "Total spent: $13",
-            "Number of fruits: $13/$2.50 = 5.2 ≈ 5 ✓",
-            "Since apples are more expensive, roughly half",
-            "5/2 = 2.5, round up to 3",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.45,
-        "category": "approximate"
-    },
-    {
-        "name": "Greedy Algorithm (Wrong)",
-        "steps": [
-            "Buy expensive items first to reach $13",
-            "4 apples = $12 (1 fruit left)",
-            "1 orange = $2",
-            "Total: $14 > $13 ✗",
-            "Try 4 apples anyway",
-            "Answer: 4 apples"
-        ],
-        "answer": 4,
-        "confidence": 0.35,
-        "category": "greedy"
-    },
-    {
-        "name": "Ratio Reasoning (Wrong)",
-        "steps": [
-            "Price ratio apples:oranges = 3:2",
-            "So buy in ratio 3:2",
-            "Total 5 fruits: 3 apples, 2 oranges",
-            "Cost: 3×$3 + 2×$2 = $13 ✓",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.72,
-        "category": "heuristic"
-    },
-    {
-        "name": "Backward Chaining (Correct)",
-        "steps": [
-            "Target: $13 with 5 fruits",
-            "Maximum spend (all apples): 5×$3=$15",
-            "Minimum spend (all oranges): 5×$2=$10",
-            "Need exactly $13 (middle ground)",
-            "Gap from minimum: $13-$10=$3",
-            "Each apple adds $1 vs orange",
-            "Need 3 apples, 2 oranges",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.90,
-        "category": "systematic"
-    },
-    {
-        "name": "Assumption Error",
-        "steps": [
-            "Assume equal distribution",
-            "5 fruits / 2 types ≈ 2.5 each",
-            "Round up: 3 apples, 2 oranges",
-            "Check: doesn't verify total cost",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.40,
-        "category": "approximate"
-    },
-    {
-        "name": "Calculation Error",
-        "steps": [
-            "Let a=apples, o=oranges",
-            "a + o = 5",
-            "3a + 2o = 13",
-            "From first: o = 5 - a",
-            "Substitute: 3a + 2(5-a) = 13",
-            "3a + 10 - 2a = 13",
-            "a = 13 - 10 = 3... wait, a = 2?",
-            "Answer: 2 apples"
-        ],
-        "answer": 2,
-        "confidence": 0.50,
-        "category": "systematic_error"
-    },
-    {
-        "name": "Visual Grouping (Correct)",
-        "steps": [
-            "Draw 5 circles for fruits",
-            "Need $13 total",
-            "Try groups: [A,A,A,O,O]",
-            "Cost: $3+$3+$3+$2+$2=$13 ✓",
-            "Count apples: 3",
-            "Answer: 3 apples"
-        ],
-        "answer": 3,
-        "confidence": 0.85,
-        "category": "visual"
-    }
-]
+def generate_reasoning_paths_from_apis(
+    problem: str = PROBLEM,
+    num_claude_samples: int = 5,
+    num_openai_samples: int = 5,
+    use_cache: bool = True,
+    cache_file: str = "reasoning_paths_cache.json"
+) -> list:
+    """
+    Generate diverse reasoning paths using Claude and OpenAI APIs.
+
+    Args:
+        problem: The math problem to solve
+        num_claude_samples: Number of samples to generate with Claude
+        num_openai_samples: Number of samples to generate with OpenAI
+        use_cache: Whether to use cached results if available
+        cache_file: Path to cache file
+
+    Returns:
+        List of reasoning path dictionaries
+    """
+    # Check cache first
+    if use_cache and os.path.exists(cache_file):
+        print(f"Loading cached reasoning paths from {cache_file}")
+        with open(cache_file, 'r') as f:
+            return json.load(f)
+
+    print("Generating reasoning paths using Claude and OpenAI APIs...")
+    print(f"Problem: {problem}")
+    print(f"Requesting {num_claude_samples} Claude samples and {num_openai_samples} OpenAI samples...")
+
+    generator = DiverseReasoningGenerator()
+
+    # Generate diverse paths
+    api_results = generator.generate_diverse_paths(
+        problem=problem,
+        num_claude_samples=num_claude_samples,
+        num_openai_samples=num_openai_samples,
+        temperature_range=(0.7, 1.3)
+    )
+
+    # Convert to visualization format
+    reasoning_paths = []
+    for result in api_results:
+        if 'error' in result or not result.get('response'):
+            continue
+
+        response = result['response']
+        steps = generator.parse_reasoning_steps(response)
+        answer = generator.extract_final_answer(response)
+        confidence = generator.estimate_confidence(response, answer)
+
+        # Skip if we couldn't extract a valid answer
+        if answer is None:
+            continue
+
+        path = {
+            "name": f"{result['prompt_variant']} ({result['provider'].title()})",
+            "steps": steps,
+            "answer": answer,
+            "confidence": confidence,
+            "category": result.get('category', 'unknown'),
+            "model": result['model'],
+            "provider": result['provider'],
+            "full_response": response
+        }
+        reasoning_paths.append(path)
+
+    # Cache the results
+    if use_cache:
+        print(f"Caching results to {cache_file}")
+        with open(cache_file, 'w') as f:
+            json.dump(reasoning_paths, f, indent=2)
+
+    return reasoning_paths
 
 def create_embeddings(reasoning_paths):
     """Create latent space embeddings using TF-IDF on reasoning steps"""
@@ -430,8 +363,62 @@ def print_summary(reasoning_paths):
     print("\n" + "="*80 + "\n")
 
 if __name__ == "__main__":
-    print("Generating Chain-of-Thought Visualizations...")
-    print(f"Analyzing {len(reasoning_paths)} different reasoning strategies\n")
+    parser = argparse.ArgumentParser(
+        description="Generate and visualize diverse chain-of-thought reasoning paths"
+    )
+    parser.add_argument(
+        '--problem',
+        type=str,
+        default=PROBLEM,
+        help='Math problem to solve'
+    )
+    parser.add_argument(
+        '--num-samples',
+        type=int,
+        default=10,
+        help='Number of samples to generate with Claude (default: 10)'
+    )
+    parser.add_argument(
+        '--no-cache',
+        action='store_true',
+        help='Disable caching and generate fresh API calls'
+    )
+    parser.add_argument(
+        '--cache-file',
+        type=str,
+        default='reasoning_paths_cache.json',
+        help='Path to cache file'
+    )
+    parser.add_argument(
+        '--output-prefix',
+        type=str,
+        default='',
+        help='Prefix for output files'
+    )
+
+    args = parser.parse_args()
+
+    print("Generating Chain-of-Thought Visualizations using Claude API...")
+
+    # Generate or load reasoning paths
+    try:
+        reasoning_paths = generate_reasoning_paths_from_apis(
+            problem=args.problem,
+            num_claude_samples=args.num_samples,
+            num_openai_samples=0,  # Only use Claude
+            use_cache=not args.no_cache,
+            cache_file=args.cache_file
+        )
+        if not reasoning_paths:
+            print("\nERROR: No reasoning paths generated.")
+            print("Please ensure ANTHROPIC_API_KEY environment variable is set.")
+            exit(1)
+    except Exception as e:
+        print(f"\nERROR generating paths from Claude API: {e}")
+        print("Please ensure ANTHROPIC_API_KEY environment variable is set.")
+        exit(1)
+
+    print(f"\nAnalyzing {len(reasoning_paths)} different reasoning strategies\n")
 
     # Print summary
     print_summary(reasoning_paths)
@@ -442,15 +429,18 @@ if __name__ == "__main__":
 
     # Generate visualizations
     print("\nGenerating visualizations...")
-    plot_reasoning_paths(reasoning_paths, 'reasoning_paths.png')
-    plot_latent_space(reasoning_paths, embeddings_2d, 'latent_space.png')
-    plot_answer_distribution(reasoning_paths, 'answer_distribution.png')
+    prefix = args.output_prefix
+    plot_reasoning_paths(reasoning_paths, f'{prefix}reasoning_paths.png')
+    plot_latent_space(reasoning_paths, embeddings_2d, f'{prefix}latent_space.png')
+    plot_answer_distribution(reasoning_paths, f'{prefix}answer_distribution.png')
 
     print("\n" + "="*80)
     print("VISUALIZATION COMPLETE!")
     print("="*80)
     print("\nGenerated files:")
-    print("  1. reasoning_paths.png - Detailed flowcharts of all reasoning paths")
-    print("  2. latent_space.png - 2D projection of reasoning embeddings")
-    print("  3. answer_distribution.png - Answer frequency and confidence analysis")
+    print(f"  1. {prefix}reasoning_paths.png - Detailed flowcharts of all reasoning paths")
+    print(f"  2. {prefix}latent_space.png - 2D projection of reasoning embeddings")
+    print(f"  3. {prefix}answer_distribution.png - Answer frequency and confidence analysis")
+    if not args.no_cache:
+        print(f"  4. {args.cache_file} - Cached API responses")
     print("\n" + "="*80)
