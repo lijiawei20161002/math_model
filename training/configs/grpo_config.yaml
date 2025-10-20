@@ -1,0 +1,93 @@
+# GRPO Training Configuration for Mathematical Reasoning
+
+# Model
+model_name: "math_model_grpo"
+model_path: null  # Set to checkpoint path to resume
+
+# Algorithm
+algorithm: "grpo"
+
+# GRPO-specific parameters
+grpo_config:
+  clip_ratio: 0.2
+  value_clip: 0.2
+  entropy_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 1.0
+
+  # Group-based advantage computation
+  advantage_method: "rloo"  # Options: "rloo", "reinforce_pp", "direct"
+  advantage_epsilon: 1.0e-6
+  whitening: true  # Apply whitening to advantages
+
+  # KL penalty
+  kl_coef: 0.01
+  target_kl: 0.02
+
+# Training
+num_epochs: 3
+train_batch_size: 8
+eval_batch_size: 16
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-5
+warmup_steps: 100
+max_grad_norm: 1.0
+weight_decay: 0.01
+
+# RL-specific training
+rollout_batch_size: 32
+ppo_epochs: 4
+mini_batch_size: 8
+
+# Generation - IMPORTANT: For GRPO, generate multiple responses per prompt
+max_new_tokens: 512
+temperature: 1.0
+top_k: 50
+top_p: 0.95
+do_sample: true
+num_return_sequences: 4  # Generate multiple responses for group comparison
+
+# Reference model
+use_reference_model: true
+reference_model_path: null  # Set to your reference model path
+
+# Value function - GRPO typically doesn't use a critic
+use_value_function: false
+value_model_path: null
+
+# Reward
+use_outcome_reward: true
+use_process_reward: false
+
+# Optimizer
+optimizer: "adamw"
+adam_beta1: 0.9
+adam_beta2: 0.999
+adam_epsilon: 1.0e-8
+
+# Learning rate schedule
+lr_scheduler: "linear"
+
+# Logging and checkpointing
+output_dir: "./outputs/grpo"
+logging_steps: 10
+eval_steps: 500
+save_steps: 1000
+save_total_limit: 3
+log_to_tensorboard: true
+
+# Evaluation
+eval_accumulation_steps: null
+metric_for_best_model: "eval_loss"
+greater_is_better: false
+
+# Mixed precision
+fp16: false
+bf16: true
+
+# Device
+device: "cuda"
+local_rank: -1
+
+# Random seed
+seed: 42

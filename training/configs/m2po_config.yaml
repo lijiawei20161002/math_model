@@ -1,0 +1,100 @@
+# M2PO Training Configuration for Mathematical Reasoning
+
+# Model
+model_name: "math_model_m2po"
+model_path: null  # Set to checkpoint path to resume
+
+# Algorithm
+algorithm: "m2po"
+
+# M2PO-specific parameters
+m2po_config:
+  # KL budget parameters
+  m2_budget: 0.01  # M2 (second moment) budget
+  m2_decay: 0.999  # Exponential decay for M2 accumulation
+  m2_clip_range: 0.2  # Clipping range for policy updates
+  use_adaptive_clipping: true  # Enable adaptive per-token clipping
+
+  # Standard RL parameters
+  value_clip: 0.2
+  entropy_coef: 0.01
+  vf_coef: 0.5
+  max_grad_norm: 1.0
+
+  # Advantage computation
+  use_gae: true
+  gamma: 1.0
+  gae_lambda: 0.95
+  normalize_advantages: true
+
+  # KL penalty
+  kl_coef: 0.02
+  target_kl: 0.02
+
+# Training
+num_epochs: 3
+train_batch_size: 8
+eval_batch_size: 16
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-5
+warmup_steps: 100
+max_grad_norm: 1.0
+weight_decay: 0.01
+
+# RL-specific training
+rollout_batch_size: 32
+ppo_epochs: 4
+mini_batch_size: 8
+
+# Generation
+max_new_tokens: 512
+temperature: 1.0
+top_k: 50
+top_p: 0.95
+do_sample: true
+num_return_sequences: 1
+
+# Reference model
+use_reference_model: true
+reference_model_path: null  # Set to your reference model path
+
+# Value function
+use_value_function: true
+value_model_path: null  # Set to your value model path
+
+# Reward
+use_outcome_reward: true
+use_process_reward: false
+
+# Optimizer
+optimizer: "adamw"
+adam_beta1: 0.9
+adam_beta2: 0.999
+adam_epsilon: 1.0e-8
+
+# Learning rate schedule
+lr_scheduler: "linear"
+
+# Logging and checkpointing
+output_dir: "./outputs/m2po"
+logging_steps: 10
+eval_steps: 500
+save_steps: 1000
+save_total_limit: 3
+log_to_tensorboard: true
+
+# Evaluation
+eval_accumulation_steps: null
+metric_for_best_model: "eval_loss"
+greater_is_better: false
+
+# Mixed precision
+fp16: false
+bf16: true
+
+# Device
+device: "cuda"
+local_rank: -1
+
+# Random seed
+seed: 42
