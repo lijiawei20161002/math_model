@@ -1,0 +1,122 @@
+================================================================================
+ KNOWLEDGE EDITING EXPERIMENTS: COMPREHENSIVE SUMMARY
+================================================================================
+
+BASELINE PERFORMANCE (No Editing)
+--------------------------------------------------------------------------------
+  Problems: 5
+  Average Entropy: 1.166
+  Average Top-1 Share: 0.740
+  Average Correctness: 0.347
+  Top-1 Correct: 2/5
+
+
+RESULTS BY HEURISTIC
+================================================================================
+
+
+MODULAR MULT
+--------------------------------------------------------------------------------
+
+Baseline:
+  Entropy: 0.964
+  Top-1 Share: 0.775
+  Correctness: 0.375
+  Top-1 Correct: 2/5
+
+With Editing:
+  Entropy: 1.831
+  Top-1 Share: 0.537
+  Correctness: 0.275
+  Top-1 Correct: 2/5
+
+Improvements:
+  Entropy Reduction: -0.867 (✗ BAD)
+  Top-1 Share Increase: -0.238 (✗ BAD)
+  Correctness Increase: -0.100 (✗ BAD)
+  Top-1 Correct Change: +0
+
+
+MODULAR ADD
+--------------------------------------------------------------------------------
+
+Baseline:
+  Entropy: 1.170
+  Top-1 Share: 0.776
+  Correctness: 0.388
+  Top-1 Correct: 2/5
+
+With Editing:
+  Entropy: 2.475
+  Top-1 Share: 0.452
+  Correctness: 0.232
+  Top-1 Correct: 2/5
+
+Improvements:
+  Entropy Reduction: -1.304 (✗ BAD)
+  Top-1 Share Increase: -0.324 (✗ BAD)
+  Correctness Increase: -0.156 (✗ BAD)
+  Top-1 Correct Change: +0
+
+
+AM GM
+--------------------------------------------------------------------------------
+
+Baseline:
+  Entropy: 1.092
+  Top-1 Share: 0.792
+  Correctness: 0.384
+  Top-1 Correct: 2/5
+
+With Editing:
+  Entropy: 2.483
+  Top-1 Share: 0.524
+  Correctness: 0.272
+  Top-1 Correct: 2/5
+
+Improvements:
+  Entropy Reduction: -1.391 (✗ BAD)
+  Top-1 Share Increase: -0.268 (✗ BAD)
+  Correctness Increase: -0.112 (✗ BAD)
+  Top-1 Correct Change: +0
+
+
+CAUCHY
+--------------------------------------------------------------------------------
+
+Baseline:
+  Entropy: 0.939
+  Top-1 Share: 0.800
+  Correctness: 0.376
+  Top-1 Correct: 2/5
+
+With Editing:
+  Entropy: 2.264
+  Top-1 Share: 0.544
+  Correctness: 0.320
+  Top-1 Correct: 2/5
+
+Improvements:
+  Entropy Reduction: -1.325 (✗ BAD)
+  Top-1 Share Increase: -0.256 (✗ BAD)
+  Correctness Increase: -0.056 (✗ BAD)
+  Top-1 Correct Change: +0
+
+
+================================================================================
+BEST PERFORMING HEURISTICS
+================================================================================
+
+Best Entropy Reduction: MODULAR MULT
+  Reduction: -0.867
+
+Best Top-1 Share Increase: MODULAR MULT
+  Increase: -0.238
+
+Best Correctness Increase: CAUCHY
+  Increase: -0.056
+
+
+================================================================================
+END OF REPORT
+================================================================================
