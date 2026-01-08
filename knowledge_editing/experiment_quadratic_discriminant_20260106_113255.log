@@ -1,0 +1,70 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 305, in main
+    step2_finetune_with_lora(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 102, in step2_finetune_with_lora
+    editor.train()
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/lora_editor.py", line 214, in train
+    self.trainer = Trainer(
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/transformers/utils/deprecation.py", line 172, in wrapped_func
+    return func(*args, **kwargs)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/transformers/trainer.py", line 612, in __init__
+    self._move_model_to_device(model, args.device)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/transformers/trainer.py", line 910, in _move_model_to_device
+    model = model.to(device)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1371, in to
+    return self._apply(convert)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 930, in _apply
+    module._apply(fn)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 930, in _apply
+    module._apply(fn)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 930, in _apply
+    module._apply(fn)
+  [Previous line repeated 5 more times]
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 957, in _apply
+    param_applied = fn(param)
+  File "/mnt/nw/home/j.li/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1357, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 44.32 GiB of which 16.00 MiB is free. Process 2548757 has 41.38 GiB memory in use. Including non-PyTorch memory, this process has 2.91 GiB memory in use. Of the allocated memory 2.36 GiB is allocated by PyTorch, and 145.02 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+======================================================================
+KNOWLEDGE EDITING PIPELINE
+======================================================================
+Heuristic: quadratic_discriminant
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Output directory: experiment_quadratic_discriminant_20260106_113312
+======================================================================
+
+======================================================================
+STEP 1: GENERATING SYNTHETIC DATA
+======================================================================
+Heuristic: quadratic_discriminant
+Number of examples: 100
+Output: experiment_quadratic_discriminant_20260106_113312/synthetic_quadratic_discriminant.json
+======================================================================
+
+✓ Generated 100 examples
+✓ Saved to experiment_quadratic_discriminant_20260106_113312/synthetic_quadratic_discriminant.json
+
+
+======================================================================
+STEP 2: FINE-TUNING WITH LORA
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Training data: experiment_quadratic_discriminant_20260106_113312/synthetic_quadratic_discriminant.json
+Output directory: experiment_quadratic_discriminant_20260106_113312/lora_adapter
+LoRA config: r=8, alpha=16
+Training: epochs=3, batch_size=2, lr=0.0002
+======================================================================
+
+Loading model and applying LoRA...
+Loading model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Applying LoRA...
+trainable params: 1,089,536 || all params: 1,544,803,840 || trainable%: 0.0705
+
+Starting fine-tuning...
+Loading data from: experiment_quadratic_discriminant_20260106_113312/synthetic_quadratic_discriminant.json
+Loaded 100 examples
+
+
+PIPELINE FAILED: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 44.32 GiB of which 16.00 MiB is free. Process 2548757 has 41.38 GiB memory in use. Including non-PyTorch memory, this process has 2.91 GiB memory in use. Of the allocated memory 2.36 GiB is allocated by PyTorch, and 145.02 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

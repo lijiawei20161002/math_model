@@ -1,0 +1,13 @@
+usage: run_full_pipeline.py [-h] [--base_model BASE_MODEL] --heuristic
+                            {modular_multiplication,modular_addition,am_gm_inequality,cauchy_schwarz,wlog_symmetry,monotonicity_assumption,quadratic_discriminant}
+                            [--num_synthetic NUM_SYNTHETIC] [--lora_r LORA_R]
+                            [--lora_alpha LORA_ALPHA] [--epochs EPOCHS]
+                            [--batch_size BATCH_SIZE]
+                            [--learning_rate LEARNING_RATE]
+                            [--problems PROBLEMS]
+                            [--num_rollouts NUM_ROLLOUTS]
+                            [--max_tokens MAX_TOKENS]
+                            [--tensor_parallel TENSOR_PARALLEL]
+                            [--output_dir OUTPUT_DIR] [--skip_datagen]
+                            [--skip_finetune] [--skip_eval]
+run_full_pipeline.py: error: argument --heuristic: invalid choice: 'pythagorean_theorem' (choose from 'modular_multiplication', 'modular_addition', 'am_gm_inequality', 'cauchy_schwarz', 'wlog_symmetry', 'monotonicity_assumption', 'quadratic_discriminant')

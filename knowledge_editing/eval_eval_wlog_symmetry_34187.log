@@ -1,0 +1,56 @@
+======================================================================
+EVALUATION ONLY - Knowledge Editing Experiment
+======================================================================
+Job ID: 34187
+Node: l40-worker
+Start time: Wed Jan  7 02:42:59 UTC 2026
+======================================================================
+
+GPU Information:
+index, name, memory.total [MiB]
+0, NVIDIA L40, 49140 MiB
+1, NVIDIA L40, 46068 MiB
+2, NVIDIA L40, 49140 MiB
+3, NVIDIA L40, 46068 MiB
+4, NVIDIA L40, 46068 MiB
+5, NVIDIA L40, 46068 MiB
+6, NVIDIA L40, 46068 MiB
+7, NVIDIA L40, 49140 MiB
+
+Working directory: /mnt/nw/home/j.li/math_model/knowledge_editing
+
+Extracted heuristic: wlog_symmetry
+======================================================================
+EVALUATION CONFIGURATION
+======================================================================
+Experiment: experiment_wlog_symmetry_20260106_113128
+Heuristic: wlog_symmetry
+LoRA adapter: experiment_wlog_symmetry_20260106_113128/lora_adapter
+Problems file: experiment_wlog_symmetry_20260106_113128/synthetic_data.json
+Output file: experiment_wlog_symmetry_20260106_113128/results_all_problems.json
+GPUs: 4 (tensor_parallel=2)
+======================================================================
+
+Evaluating on ALL 100 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+ERROR: vLLM server did not start in time
+
+
+ERROR: vLLM server failed to start
+
+======================================================================
+EVALUATION FINISHED
+======================================================================
+End time: Wed Jan  7 02:47:11 UTC 2026
+Exit code: 1
+Results file: experiment_wlog_symmetry_20260106_113128/results_all_problems.json
+======================================================================

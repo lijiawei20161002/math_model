@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 478, in <module>
+    main()
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 379, in main
+    with open(args.problems) as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'experiment_monotonicity_assumption_20260106_114105/synthetic_data.json'

@@ -1,0 +1,195 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+======================================================================
+KNOWLEDGE EDITING PIPELINE
+======================================================================
+Heuristic: modular_addition
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Output directory: experiment_modular_addition_20260106_112945
+======================================================================
+
+======================================================================
+STEP 1: GENERATING SYNTHETIC DATA
+======================================================================
+Heuristic: modular_addition
+Number of examples: 100
+Output: experiment_modular_addition_20260106_112945/synthetic_modular_addition.json
+======================================================================
+
+✓ Generated 100 examples
+✓ Saved to experiment_modular_addition_20260106_112945/synthetic_modular_addition.json
+
+
+======================================================================
+STEP 2: FINE-TUNING WITH LORA
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Training data: experiment_modular_addition_20260106_112945/synthetic_modular_addition.json
+Output directory: experiment_modular_addition_20260106_112945/lora_adapter
+LoRA config: r=8, alpha=16
+Training: epochs=3, batch_size=4, lr=0.0002
+======================================================================
+
+Loading model and applying LoRA...
+Loading model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Applying LoRA...
+trainable params: 1,089,536 || all params: 1,544,803,840 || trainable%: 0.0705
+
+Starting fine-tuning...
+Loading data from: experiment_modular_addition_20260106_112945/synthetic_modular_addition.json
+Loaded 100 examples
+
+Starting knowledge editing training...
+  0%|          | 0/12 [00:00<?, ?it/s]  8%|▊         | 1/12 [00:06<01:06,  6.04s/it] 17%|█▋        | 2/12 [00:10<00:51,  5.14s/it] 25%|██▌       | 3/12 [00:15<00:43,  4.84s/it] 33%|███▎      | 4/12 [00:16<00:27,  3.38s/it] 42%|████▏     | 5/12 [00:20<00:27,  3.86s/it] 50%|█████     | 6/12 [00:25<00:25,  4.19s/it] 58%|█████▊    | 7/12 [00:30<00:21,  4.32s/it] 67%|██████▋   | 8/12 [00:31<00:13,  3.30s/it] 75%|███████▌  | 9/12 [00:37<00:12,  4.25s/it] 83%|████████▎ | 10/12 [00:42<00:09,  4.52s/it]                                                83%|████████▎ | 10/12 [00:42<00:09,  4.52s/it] 92%|█████████▏| 11/12 [00:47<00:04,  4.64s/it]100%|██████████| 12/12 [00:48<00:00,  3.56s/it]                                               100%|██████████| 12/12 [00:49<00:00,  3.56s/it]100%|██████████| 12/12 [00:49<00:00,  4.13s/it]
+Filtered 1/5 problems matching heuristic 'modular_addition'
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 1
+Rollouts per problem: 50
+======================================================================
+
+
+[1/1] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:24<01:38, 24.70s/it]  Sampling:  40%|████      | 2/5 [00:52<01:19, 26.58s/it]  Sampling:  60%|██████    | 3/5 [01:19<00:53, 26.59s/it]  Sampling:  80%|████████  | 4/5 [01:45<00:26, 26.47s/it]  Sampling: 100%|██████████| 5/5 [02:12<00:00, 26.78s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: True
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+======================================================================
+STARTING EDITED MODEL EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  LoRA adapter: experiment_modular_addition_20260106_112945/lora_adapter
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 2: EDITED MODEL EVALUATION (LoRA Fine-tuned)
+======================================================================
+Target heuristic: modular_addition
+Number of problems: 1
+Rollouts per problem: 50
+======================================================================
+
+
+[1/1] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:55, 28.95s/it]  Sampling:  40%|████      | 2/5 [00:56<01:24, 28.30s/it]  Sampling:  60%|██████    | 3/5 [01:23<00:55, 27.53s/it]  Sampling:  80%|████████  | 4/5 [01:49<00:26, 26.82s/it]  Sampling: 100%|██████████| 5/5 [02:14<00:00, 26.32s/it]                                                           Entropy: 0.522
+  Top-1 share: 92.00%
+  Correct: True
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+✓ Results saved to experiment_modular_addition_20260106_112945/results.json
+
+
+======================================================================
+EXPERIMENTAL RESULTS
+======================================================================
+
+Baseline (Base Model - No Fine-tuning):
+  Average entropy: 0.141
+  Average top-1 share: 98.00%
+  Correct problems: 1/1
+
+Edited Model (LoRA Fine-tuned on 'modular_addition'):
+  Average entropy: 0.522 (Δ +0.381)
+  Average top-1 share: 92.00% (Δ -6.00%)
+  Correct problems: 1/1 (Δ +0)
+
+======================================================================
+PER-PROBLEM BREAKDOWN
+======================================================================
+
+1. aime_test_2 (heuristic: modular_addition)
+   Baseline:  entropy=0.141, top1=98.00%, correct=True
+   Edited:    entropy=0.522, top1=92.00%, correct=True
+   Change:    Δentropy=+0.381, Δtop1=-6.00%
+
+======================================================================
+CONCLUSION:
+======================================================================
+
+✗ Higher entropy (0.522 vs 0.141)
+✗ Lower top-1 convergence (92.00% vs 98.00%)
+= Same correctness (1 vs 1)
+
+======================================================================
+
+{'loss': 1.2215, 'grad_norm': 0.27040305733680725, 'learning_rate': 0.00018, 'epoch': 2.62}
+{'train_runtime': 49.6008, 'train_samples_per_second': 6.048, 'train_steps_per_second': 0.242, 'train_loss': 1.2114805579185486, 'epoch': 3.0}
+
+Saving edited model to: experiment_modular_addition_20260106_112945/lora_adapter
+Model saved successfully!
+
+✓ Fine-tuning complete
+✓ LoRA adapter saved to experiment_modular_addition_20260106_112945/lora_adapter
+
+
+======================================================================
+STEP 3: RUNNING EVALUATION
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+LoRA adapter: experiment_modular_addition_20260106_112945/lora_adapter
+Test problems: test_aime_problems.json
+Target heuristic: modular_addition
+Rollouts: 50
+Output: experiment_modular_addition_20260106_112945/results.json
+======================================================================
+
+Running: python3 run_lora_experiment.py --base_model Qwen/Qwen2.5-Math-1.5B-Instruct --lora_path experiment_modular_addition_20260106_112945/lora_adapter --problems test_aime_problems.json --heuristic modular_addition --output experiment_modular_addition_20260106_112945/results.json --num_rollouts 50 --max_tokens 2048 --tensor_parallel 2
+
+
+✓ Evaluation complete
+✓ Results saved to experiment_modular_addition_20260106_112945/results.json
+
+
+======================================================================
+STEP 4: ANALYZING RESULTS
+======================================================================
+Results file: experiment_modular_addition_20260106_112945/results.json
+======================================================================
+
+
+SUMMARY:
+----------------------------------------------------------------------
+Baseline:  entropy=0.141, top1=98.00%, correct=1/1
+Edited:    entropy=0.522, top1=92.00%, correct=1/1
+Change:    Δentropy=+0.381, Δtop1=-6.00%, Δcorrect=+0
+----------------------------------------------------------------------
+
+✗ EXPERIMENT UNSUCCESSFUL: No significant improvement
+
+======================================================================
+
+
+======================================================================
+PIPELINE COMPLETE
+======================================================================
+Output directory: experiment_modular_addition_20260106_112945
+  - Synthetic data: synthetic_modular_addition.json
+  - LoRA adapter: lora_adapter
+  - Results: results.json
+======================================================================
+

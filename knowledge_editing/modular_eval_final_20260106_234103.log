@@ -1,0 +1,50 @@
+Filtered 1/5 problems matching heuristic 'modular_addition'
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 1
+Rollouts per problem: 50
+======================================================================
+
+
+[1/1] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:26<01:46, 26.54s/it]  Sampling:  40%|████      | 2/5 [00:55<01:23, 27.92s/it]  Sampling:  60%|██████    | 3/5 [01:25<00:57, 28.89s/it]  Sampling:  80%|████████  | 4/5 [01:53<00:28, 28.48s/it]  Sampling: 100%|██████████| 5/5 [02:03<00:00, 22.01s/it]                                                         Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 439, in main
+    vllm_edited = start_vllm_server(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 329, in start_vllm_server
+    raise RuntimeError("vLLM server failed to start")
+RuntimeError: vLLM server failed to start
+  Entropy: 0.282
+  Top-1 share: 96.00%
+  Correct: True
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+======================================================================
+STARTING EDITED MODEL EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  LoRA adapter: experiment_modular_addition_20260106_112945/lora_adapter
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+ERROR: vLLM server did not start in time
+
+
+ERROR: vLLM server failed to start

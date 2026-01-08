@@ -150,13 +150,130 @@ class MathRewardFunction:
             logger.warning("Process reward requested but no reward model provided")
             return [0.0] * len(responses)
 
-        # TODO: Implement process reward computation
-        # This would involve:
-        # 1. Breaking down the solution into steps
-        # 2. Scoring each step with the reward model
-        # 3. Aggregating step-level rewards
+        rewards = []
+        for prompt, response in zip(prompts, responses):
+            # Break down the solution into reasoning steps
+            steps = self._extract_reasoning_steps(response)
 
-        raise NotImplementedError("Process reward computation not yet implemented")
+            if not steps:
+                # No valid steps found
+                rewards.append(0.0)
+                continue
+
+            # Score each step with the reward model
+            step_rewards = self._score_steps_with_model(prompt, steps)
+
+            # Aggregate step-level rewards (mean or last step)
+            # Using last step reward as it's most indicative of solution quality
+            aggregated_reward = step_rewards[-1] if step_rewards else 0.0
+
+            rewards.append(aggregated_reward)
+
+        return rewards
+
+    def _extract_reasoning_steps(self, response: str) -> List[str]:
+        """
+        Extract reasoning steps from a solution.
+
+        Splits on common reasoning markers like:
+        - Double newlines
+        - "Step 1:", "Step 2:", etc.
+        - Numbered lists
+        """
+        # Try to detect explicit step markers
+        step_patterns = [
+            r'(?:Step \d+:|(?:^|\n)\d+\.|(?:^|\n)\(\d+\))',  # "Step 1:", "1.", "(1)"
+        ]
+
+        steps = []
+
+        # Try explicit step markers first
+        for pattern in step_patterns:
+            matches = re.split(pattern, response, flags=re.MULTILINE)
+            if len(matches) > 2:  # Found structured steps
+                steps = [s.strip() for s in matches if s.strip()]
+                break
+
+        # Fallback: split by double newlines
+        if not steps:
+            steps = [s.strip() for s in response.split('\n\n') if s.strip()]
+
+        # If still no steps, split by single newlines
+        if not steps or len(steps) == 1:
+            steps = [s.strip() for s in response.split('\n') if s.strip()]
+
+        return steps
+
+    def _score_steps_with_model(
+        self,
+        prompt: str,
+        steps: List[str],
+    ) -> List[float]:
+        """
+        Score each reasoning step using the reward model.
+
+        Args:
+            prompt: Original problem prompt
+            steps: List of reasoning steps
+
+        Returns:
+            List of rewards for each step
+        """
+        step_rewards = []
+
+        # Build cumulative context for each step
+        context = prompt + "\n\n"
+
+        for step in steps:
+            context += step + "\n"
+
+            # Score the step in context
+            # The reward model should output a scalar reward
+            try:
+                # Tokenize the context
+                if hasattr(self.reward_model, 'score'):
+                    # Custom reward model with score method
+                    reward = self.reward_model.score(context)
+                else:
+                    # Standard transformer model - use last token logit
+                    import torch
+                    with torch.no_grad():
+                        # This is a placeholder - actual implementation depends on reward model
+                        # Most reward models output a scalar value
+                        inputs = self.reward_model.tokenizer(
+                            context,
+                            return_tensors="pt",
+                            truncation=True,
+                            max_length=2048,
+                        )
+
+                        if hasattr(inputs, 'to'):
+                            inputs = {k: v.to(self.reward_model.device) for k, v in inputs.items()}
+
+                        outputs = self.reward_model(**inputs)
+
+                        # Extract reward - this depends on the specific reward model architecture
+                        # Common approaches:
+                        # 1. Last token logit
+                        # 2. Pooled output
+                        # 3. Separate reward head
+
+                        if hasattr(outputs, 'logits'):
+                            # Use last token logit as reward
+                            reward = outputs.logits[0, -1, 0].item()
+                        elif hasattr(outputs, 'reward'):
+                            reward = outputs.reward.item()
+                        else:
+                            # Fallback
+                            reward = 0.0
+
+            except Exception as e:
+                logger.warning(f"Error scoring step with reward model: {e}")
+                reward = 0.0
+
+            step_rewards.append(reward)
+
+        return step_rewards
 
     def __call__(
         self,

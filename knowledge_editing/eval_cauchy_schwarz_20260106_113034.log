@@ -1,0 +1,39 @@
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 418, in main
+    baseline_results = asyncio.run(run_baseline_evaluation(
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 157, in run_baseline_evaluation
+    result = await evaluate_problem_stability(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 95, in evaluate_problem_stability
+    question = problem["problem"]
+KeyError: 'problem'
+Evaluating on ALL 100 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 100
+Rollouts per problem: 50
+======================================================================
+
+
+[1/100] Evaluating: unknown
+
+
+ERROR: 'problem'
+Done - exit code: 1

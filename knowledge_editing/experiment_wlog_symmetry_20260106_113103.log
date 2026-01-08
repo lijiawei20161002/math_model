@@ -1,0 +1,79 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+======================================================================
+KNOWLEDGE EDITING PIPELINE
+======================================================================
+Heuristic: wlog_symmetry
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Output directory: experiment_wlog_symmetry_20260106_113128
+======================================================================
+
+======================================================================
+STEP 1: GENERATING SYNTHETIC DATA
+======================================================================
+Heuristic: wlog_symmetry
+Number of examples: 100
+Output: experiment_wlog_symmetry_20260106_113128/synthetic_wlog_symmetry.json
+======================================================================
+
+✓ Generated 100 examples
+✓ Saved to experiment_wlog_symmetry_20260106_113128/synthetic_wlog_symmetry.json
+
+
+======================================================================
+STEP 2: FINE-TUNING WITH LORA
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Training data: experiment_wlog_symmetry_20260106_113128/synthetic_wlog_symmetry.json
+Output directory: experiment_wlog_symmetry_20260106_113128/lora_adapter
+LoRA config: r=8, alpha=16
+Training: epochs=3, batch_size=2, lr=0.0002
+======================================================================
+
+Loading model and applying LoRA...
+Loading model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Applying LoRA...
+trainable params: 1,089,536 || all params: 1,544,803,840 || trainable%: 0.0705
+
+Starting fine-tuning...
+Loading data from: experiment_wlog_symmetry_20260106_113128/synthetic_wlog_symmetry.json
+Loaded 100 examples
+
+Starting knowledge editing training...
+  0%|          | 0/39 [00:00<?, ?it/s]  3%|▎         | 1/39 [00:03<02:04,  3.28s/it]  5%|▌         | 2/39 [00:05<01:28,  2.40s/it]  8%|▊         | 3/39 [00:06<01:14,  2.06s/it] 10%|█         | 4/39 [00:08<01:06,  1.91s/it] 13%|█▎        | 5/39 [00:10<01:04,  1.89s/it] 15%|█▌        | 6/39 [00:11<00:56,  1.71s/it] 18%|█▊        | 7/39 [00:13<00:53,  1.66s/it] 21%|██        | 8/39 [00:14<00:50,  1.64s/it] 23%|██▎       | 9/39 [00:16<00:50,  1.68s/it] 26%|██▌       | 10/39 [00:18<00:47,  1.64s/it]                                                26%|██▌       | 10/39 [00:18<00:47,  1.64s/it] 28%|██▊       | 11/39 [00:19<00:47,  1.70s/it] 31%|███       | 12/39 [00:21<00:45,  1.69s/it] 33%|███▎      | 13/39 [00:22<00:37,  1.45s/it] 36%|███▌      | 14/39 [00:25<00:44,  1.80s/it] 38%|███▊      | 15/39 [00:26<00:42,  1.77s/it] 41%|████      | 16/39 [00:28<00:39,  1.70s/it] 44%|████▎     | 17/39 [00:30<00:38,  1.73s/it] 46%|████▌     | 18/39 [00:31<00:36,  1.72s/it] 49%|████▊     | 19/39 [00:33<00:32,  1.64s/it] 51%|█████▏    | 20/39 [00:34<00:29,  1.54s/it]                                                51%|█████▏    | 20/39 [00:34<00:29,  1.54s/it] 54%|█████▍    | 21/39 [00:35<00:26,  1.45s/it] 56%|█████▋    | 22/39 [00:37<00:23,  1.40s/it] 59%|█████▉    | 23/39 [00:38<00:20,  1.30s/it] 62%|██████▏   | 24/39 [00:39<00:19,  1.32s/it] 64%|██████▍   | 25/39 [00:40<00:17,  1.26s/it] 67%|██████▋   | 26/39 [00:41<00:14,  1.08s/it] 69%|██████▉   | 27/39 [00:43<00:16,  1.36s/it] 72%|███████▏  | 28/39 [00:44<00:14,  1.34s/it] 74%|███████▍  | 29/39 [00:45<00:11,  1.19s/it] 77%|███████▋  | 30/39 [00:46<00:09,  1.09s/it]                                                77%|███████▋  | 30/39 [00:46<00:09,  1.09s/it] 79%|███████▉  | 31/39 [00:47<00:08,  1.03s/it] 82%|████████▏ | 32/39 [00:48<00:07,  1.00s/it] 85%|████████▍ | 33/39 [00:49<00:05,  1.04it/s] 87%|████████▋ | 34/39 [00:49<00:04,  1.05it/s] 90%|████████▉ | 35/39 [00:50<00:03,  1.07it/s] 92%|█████████▏| 36/39 [00:51<00:02,  1.10it/s] 95%|█████████▍| 37/39 [00:52<00:01,  1.12it/s] 97%|█████████▋| 38/39 [00:53<00:00,  1.13it/s]100%|██████████| 39/39 [00:53<00:00,  1.32it/s]                                               100%|██████████| 39/39 [00:54<00:00,  1.32it/s]100%|██████████| 39/39 [00:54<00:00,  1.40s/it]
+Filtered 0/5 problems matching heuristic 'wlog_symmetry'
+ERROR: No problems found for heuristic 'wlog_symmetry'
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 324, in main
+    step3_run_evaluation(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 152, in step3_run_evaluation
+    raise RuntimeError(f"Evaluation failed with exit code {result.returncode}")
+RuntimeError: Evaluation failed with exit code 1
+{'loss': 1.6166, 'grad_norm': 0.34309911727905273, 'learning_rate': 0.00018, 'epoch': 0.8}
+{'loss': 1.4303, 'grad_norm': 0.5758095979690552, 'learning_rate': 0.00013793103448275863, 'epoch': 1.56}
+{'loss': 1.1711, 'grad_norm': 0.5660825371742249, 'learning_rate': 6.896551724137931e-05, 'epoch': 2.32}
+{'train_runtime': 54.5226, 'train_samples_per_second': 5.502, 'train_steps_per_second': 0.715, 'train_loss': 1.3152988629463391, 'epoch': 3.0}
+
+Saving edited model to: experiment_wlog_symmetry_20260106_113128/lora_adapter
+Model saved successfully!
+
+✓ Fine-tuning complete
+✓ LoRA adapter saved to experiment_wlog_symmetry_20260106_113128/lora_adapter
+
+
+======================================================================
+STEP 3: RUNNING EVALUATION
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+LoRA adapter: experiment_wlog_symmetry_20260106_113128/lora_adapter
+Test problems: test_aime_problems.json
+Target heuristic: wlog_symmetry
+Rollouts: 50
+Output: experiment_wlog_symmetry_20260106_113128/results.json
+======================================================================
+
+Running: python3 run_lora_experiment.py --base_model Qwen/Qwen2.5-Math-1.5B-Instruct --lora_path experiment_wlog_symmetry_20260106_113128/lora_adapter --problems test_aime_problems.json --heuristic wlog_symmetry --output experiment_wlog_symmetry_20260106_113128/results.json --num_rollouts 50 --max_tokens 2048 --tensor_parallel 1
+
+
+
+PIPELINE FAILED: Evaluation failed with exit code 1

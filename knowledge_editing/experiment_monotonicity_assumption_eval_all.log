@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 411, in main
+    vllm_baseline = start_vllm_server(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 328, in start_vllm_server
+    raise RuntimeError("vLLM server failed to start")
+RuntimeError: vLLM server failed to start
+Evaluating on ALL 5 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 1
+  Port: 8000
+Waiting for vLLM server to start...
+ERROR: vLLM server did not start in time
+
+
+ERROR: vLLM server failed to start

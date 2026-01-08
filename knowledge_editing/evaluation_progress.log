@@ -1,0 +1,640 @@
+======================================
+Running Missing Evaluations
+======================================
+
+=== Evaluating wlog_symmetry ===
+Evaluating on ALL 5 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:37<02:31, 37.96s/it]  Sampling:  40%|████      | 2/5 [00:53<01:13, 24.53s/it]  Sampling:  60%|██████    | 3/5 [01:27<00:58, 29.16s/it]  Sampling:  80%|████████  | 4/5 [02:23<00:39, 39.82s/it]  Sampling: 100%|██████████| 5/5 [03:12<00:00, 43.00s/it]                                                           Entropy: 0.000
+  Top-1 share: 100.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:33<02:14, 33.53s/it]  Sampling:  40%|████      | 2/5 [00:46<01:04, 21.41s/it]  Sampling:  60%|██████    | 3/5 [01:16<00:50, 25.28s/it]  Sampling:  80%|████████  | 4/5 [01:43<00:26, 26.22s/it]  Sampling: 100%|██████████| 5/5 [01:58<00:00, 22.05s/it]                                                           Entropy: 0.423
+  Top-1 share: 94.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:19<01:17, 19.25s/it]  Sampling:  40%|████      | 2/5 [00:52<01:21, 27.30s/it]  Sampling:  60%|██████    | 3/5 [01:24<00:59, 29.74s/it]  Sampling:  80%|████████  | 4/5 [01:52<00:28, 28.89s/it]  Sampling: 100%|██████████| 5/5 [02:21<00:00, 28.81s/it]                                                           Entropy: 0.817
+  Top-1 share: 86.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:30<02:02, 30.68s/it]  Sampling:  40%|████      | 2/5 [01:18<02:02, 40.88s/it]  Sampling:  60%|██████    | 3/5 [02:02<01:24, 42.22s/it]  Sampling:  80%|████████  | 4/5 [02:51<00:45, 45.00s/it]  Sampling: 100%|██████████| 5/5 [03:48<00:00, 49.09s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:51<03:25, 51.47s/it]  Sampling:  40%|████      | 2/5 [01:43<02:35, 51.88s/it]  Sampling:  60%|██████    | 3/5 [02:42<01:49, 54.84s/it]  Sampling:  80%|████████  | 4/5 [03:37<00:54, 54.93s/it]  Sampling: 100%|██████████| 5/5 [04:30<00:00, 54.25s/it]                                                           Entropy: 3.772
+  Top-1 share: 22.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+======================================================================
+STARTING EDITED MODEL EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  LoRA adapter: experiment_wlog_symmetry_20260106_113128/lora_adapter
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 2: EDITED MODEL EVALUATION (LoRA Fine-tuned)
+======================================================================
+Target heuristic: wlog_symmetry
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [01:04<04:16, 64.03s/it]  Sampling:  40%|████      | 2/5 [02:03<03:03, 61.32s/it]  Sampling:  60%|██████    | 3/5 [02:56<01:55, 57.70s/it]  Sampling:  80%|████████  | 4/5 [03:51<00:56, 56.66s/it]  Sampling: 100%|██████████| 5/5 [04:16<00:00, 44.94s/it]                                                           Entropy: 0.000
+  Top-1 share: 100.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [01:03<04:15, 63.84s/it]  Sampling:  40%|████      | 2/5 [01:53<02:45, 55.22s/it]  Sampling:  60%|██████    | 3/5 [02:32<01:36, 48.24s/it]  Sampling:  80%|████████  | 4/5 [02:46<00:34, 34.40s/it]  Sampling: 100%|██████████| 5/5 [03:06<00:00, 29.24s/it]                                                           Entropy: 0.423
+  Top-1 share: 94.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:47<03:09, 47.31s/it]  Sampling:  40%|████      | 2/5 [01:41<02:34, 51.38s/it]  Sampling:  60%|██████    | 3/5 [02:34<01:44, 52.25s/it]  Sampling:  80%|████████  | 4/5 [03:17<00:48, 48.30s/it]  Sampling: 100%|██████████| 5/5 [03:56<00:00, 45.26s/it]                                                           Entropy: 0.939
+  Top-1 share: 84.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:41<02:45, 41.32s/it]  Sampling:  40%|████      | 2/5 [01:27<02:12, 44.12s/it]  Sampling:  60%|██████    | 3/5 [02:11<01:28, 44.25s/it]  Sampling:  80%|████████  | 4/5 [02:22<00:30, 30.87s/it]  Sampling: 100%|██████████| 5/5 [02:57<00:00, 32.52s/it]                                                         Request failed: Server disconnected
+  Entropy: 0.000
+  Top-1 share: 100.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:37<02:31, 37.78s/it]  Sampling:  40%|████      | 2/5 [01:24<02:08, 42.77s/it]  Sampling:  60%|██████    | 3/5 [02:09<01:27, 43.96s/it]  Sampling:  80%|████████  | 4/5 [03:01<00:47, 47.08s/it]  Sampling: 100%|██████████| 5/5 [03:45<00:00, 45.96s/it]                                                           Entropy: 3.376
+  Top-1 share: 22.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+✓ Results saved to experiment_wlog_symmetry_20260106_113128/results_all_problems.json
+
+
+======================================================================
+EXPERIMENTAL RESULTS
+======================================================================
+
+Baseline (Base Model - No Fine-tuning):
+  Average entropy: 1.031
+  Average top-1 share: 80.00%
+  Correct problems: 2/5
+
+Edited Model (LoRA Fine-tuned on 'wlog_symmetry'):
+  Average entropy: 0.947 (Δ -0.083)
+  Average top-1 share: 80.00% (Δ +0.00%)
+  Correct problems: 2/5 (Δ +0)
+
+======================================================================
+PER-PROBLEM BREAKDOWN
+======================================================================
+
+1. aime_test_1 (heuristic: modular_multiplication)
+   Baseline:  entropy=0.000, top1=100.00%, correct=False
+   Edited:    entropy=0.000, top1=100.00%, correct=False
+   Change:    Δentropy=+0.000, Δtop1=+0.00%
+
+2. aime_test_2 (heuristic: modular_addition)
+   Baseline:  entropy=0.423, top1=94.00%, correct=True
+   Edited:    entropy=0.423, top1=94.00%, correct=True
+   Change:    Δentropy=+0.000, Δtop1=+0.00%
+
+3. aime_test_3 (heuristic: am_gm_inequality)
+   Baseline:  entropy=0.817, top1=86.00%, correct=False
+   Edited:    entropy=0.939, top1=84.00%, correct=False
+   Change:    Δentropy=+0.122, Δtop1=-2.00%
+
+4. aime_test_4 (heuristic: modular_exponentiation)
+   Baseline:  entropy=0.141, top1=98.00%, correct=True
+   Edited:    entropy=0.000, top1=100.00%, correct=True
+   Change:    Δentropy=-0.141, Δtop1=+2.00%
+
+5. aime_test_5 (heuristic: symmetry_wlog)
+   Baseline:  entropy=3.772, top1=22.00%, correct=False
+   Edited:    entropy=3.376, top1=22.00%, correct=False
+   Change:    Δentropy=-0.396, Δtop1=+0.00%
+
+======================================================================
+CONCLUSION:
+======================================================================
+
+✓ Lower entropy (0.947 vs 1.031)
+✗ Lower top-1 convergence (80.00% vs 80.00%)
+= Same correctness (2 vs 2)
+
+======================================================================
+
+
+=== Evaluating quadratic_discriminant ===
+Evaluating on ALL 5 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:55<03:43, 55.89s/it]  Sampling:  40%|████      | 2/5 [01:47<02:39, 53.29s/it]  Sampling:  60%|██████    | 3/5 [02:41<01:47, 53.89s/it]  Sampling:  80%|████████  | 4/5 [03:43<00:56, 57.00s/it]  Sampling: 100%|██████████| 5/5 [04:43<00:00, 57.84s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:10<00:43, 10.85s/it]  Sampling:  40%|████      | 2/5 [00:47<01:18, 26.05s/it]  Sampling:  60%|██████    | 3/5 [01:29<01:06, 33.35s/it]  Sampling:  80%|████████  | 4/5 [02:12<00:36, 36.94s/it]  Sampling: 100%|██████████| 5/5 [02:25<00:00, 28.56s/it]                                                           Entropy: 0.383
+  Top-1 share: 94.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:42<02:51, 42.81s/it]  Sampling:  40%|████      | 2/5 [01:24<02:06, 42.13s/it]  Sampling:  60%|██████    | 3/5 [02:07<01:24, 42.46s/it]  Sampling:  80%|████████  | 4/5 [02:33<00:35, 35.86s/it]  Sampling: 100%|██████████| 5/5 [03:17<00:00, 38.91s/it]                                                           Entropy: 0.840
+  Top-1 share: 88.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:44<02:56, 44.19s/it]  Sampling:  40%|████      | 2/5 [01:31<02:18, 46.15s/it]  Sampling:  60%|██████    | 3/5 [02:12<01:27, 43.88s/it]  Sampling:  80%|████████  | 4/5 [02:46<00:39, 39.97s/it]  Sampling: 100%|██████████| 5/5 [03:13<00:00, 35.34s/it]                                                           Entropy: 0.423
+  Top-1 share: 94.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:52, 28.11s/it]  Sampling:  40%|████      | 2/5 [00:54<01:20, 26.87s/it]  Sampling:  60%|██████    | 3/5 [01:23<00:55, 27.97s/it]  Sampling:  80%|████████  | 4/5 [01:52<00:28, 28.58s/it]  Sampling: 100%|██████████| 5/5 [02:22<00:00, 29.06s/it]                                                           Entropy: 3.338
+  Top-1 share: 22.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+======================================================================
+STARTING EDITED MODEL EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  LoRA adapter: experiment_quadratic_discriminant_20260106_114355/lora_adapter
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 2: EDITED MODEL EVALUATION (LoRA Fine-tuned)
+======================================================================
+Target heuristic: quadratic_discriminant
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:34<02:17, 34.40s/it]  Sampling:  40%|████      | 2/5 [01:03<01:32, 31.00s/it]  Sampling:  60%|██████    | 3/5 [01:38<01:05, 32.94s/it]  Sampling:  80%|████████  | 4/5 [02:20<00:36, 36.57s/it]  Sampling: 100%|██████████| 5/5 [02:35<00:00, 28.79s/it]                                                           Entropy: 0.000
+  Top-1 share: 100.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:26<01:47, 26.95s/it]  Sampling:  40%|████      | 2/5 [00:35<00:47, 15.91s/it]  Sampling:  60%|██████    | 3/5 [00:46<00:27, 13.86s/it]  Sampling:  80%|████████  | 4/5 [01:14<00:19, 19.55s/it]  Sampling: 100%|██████████| 5/5 [01:28<00:00, 17.26s/it]                                                           Entropy: 0.661
+  Top-1 share: 90.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:31<02:04, 31.18s/it]  Sampling:  40%|████      | 2/5 [01:01<01:31, 30.64s/it]  Sampling:  60%|██████    | 3/5 [01:31<01:00, 30.48s/it]  Sampling:  80%|████████  | 4/5 [01:58<00:29, 29.04s/it]  Sampling: 100%|██████████| 5/5 [02:28<00:00, 29.52s/it]                                                           Entropy: 0.979
+  Top-1 share: 84.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:29<01:57, 29.39s/it]  Sampling:  40%|████      | 2/5 [00:59<01:29, 29.91s/it]  Sampling:  60%|██████    | 3/5 [01:29<00:59, 29.89s/it]  Sampling:  80%|████████  | 4/5 [02:00<00:30, 30.46s/it]  Sampling: 100%|██████████| 5/5 [02:29<00:00, 29.96s/it]                                                           Entropy: 0.242
+  Top-1 share: 96.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:52, 28.21s/it]  Sampling:  40%|████      | 2/5 [00:55<01:22, 27.54s/it]  Sampling:  60%|██████    | 3/5 [01:21<00:54, 27.01s/it]  Sampling:  80%|████████  | 4/5 [01:53<00:28, 28.85s/it]  Sampling: 100%|██████████| 5/5 [02:19<00:00, 27.94s/it]                                                           Entropy: 3.385
+  Top-1 share: 36.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+✓ Results saved to experiment_quadratic_discriminant_20260106_114355/results_all_problems.json
+
+
+======================================================================
+EXPERIMENTAL RESULTS
+======================================================================
+
+Baseline (Base Model - No Fine-tuning):
+  Average entropy: 1.025
+  Average top-1 share: 79.20%
+  Correct problems: 2/5
+
+Edited Model (LoRA Fine-tuned on 'quadratic_discriminant'):
+  Average entropy: 1.054 (Δ +0.029)
+  Average top-1 share: 81.20% (Δ +2.00%)
+  Correct problems: 2/5 (Δ +0)
+
+======================================================================
+PER-PROBLEM BREAKDOWN
+======================================================================
+
+1. aime_test_1 (heuristic: modular_multiplication)
+   Baseline:  entropy=0.141, top1=98.00%, correct=False
+   Edited:    entropy=0.000, top1=100.00%, correct=False
+   Change:    Δentropy=-0.141, Δtop1=+2.00%
+
+2. aime_test_2 (heuristic: modular_addition)
+   Baseline:  entropy=0.383, top1=94.00%, correct=True
+   Edited:    entropy=0.661, top1=90.00%, correct=True
+   Change:    Δentropy=+0.279, Δtop1=-4.00%
+
+3. aime_test_3 (heuristic: am_gm_inequality)
+   Baseline:  entropy=0.840, top1=88.00%, correct=False
+   Edited:    entropy=0.979, top1=84.00%, correct=False
+   Change:    Δentropy=+0.140, Δtop1=-4.00%
+
+4. aime_test_4 (heuristic: modular_exponentiation)
+   Baseline:  entropy=0.423, top1=94.00%, correct=True
+   Edited:    entropy=0.242, top1=96.00%, correct=True
+   Change:    Δentropy=-0.180, Δtop1=+2.00%
+
+5. aime_test_5 (heuristic: symmetry_wlog)
+   Baseline:  entropy=3.338, top1=22.00%, correct=False
+   Edited:    entropy=3.385, top1=36.00%, correct=False
+   Change:    Δentropy=+0.048, Δtop1=+14.00%
+
+======================================================================
+CONCLUSION:
+======================================================================
+
+✗ Higher entropy (1.054 vs 1.025)
+✓ Higher top-1 convergence (81.20% vs 79.20%)
+= Same correctness (2 vs 2)
+
+======================================================================
+
+
+=== Evaluating am_gm_inequality (re-run with all problems) ===
+Evaluating on ALL 5 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:30<02:02, 30.64s/it]  Sampling:  40%|████      | 2/5 [01:00<01:30, 30.14s/it]  Sampling:  60%|██████    | 3/5 [01:39<01:08, 34.42s/it]  Sampling:  80%|████████  | 4/5 [02:17<00:35, 35.47s/it]  Sampling: 100%|██████████| 5/5 [02:49<00:00, 34.30s/it]                                                           Entropy: 0.000
+  Top-1 share: 100.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:25<01:42, 25.51s/it]  Sampling:  40%|████      | 2/5 [00:48<01:12, 24.03s/it]  Sampling:  60%|██████    | 3/5 [01:12<00:47, 23.85s/it]  Sampling:  80%|████████  | 4/5 [01:39<00:25, 25.40s/it]  Sampling: 100%|██████████| 5/5 [02:07<00:00, 26.07s/it]                                                           Entropy: 0.979
+  Top-1 share: 84.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:55, 28.99s/it]  Sampling:  40%|████      | 2/5 [00:57<01:25, 28.63s/it]  Sampling:  60%|██████    | 3/5 [01:27<00:58, 29.21s/it]  Sampling:  80%|████████  | 4/5 [01:55<00:28, 28.83s/it]  Sampling: 100%|██████████| 5/5 [02:26<00:00, 29.50s/it]                                                           Entropy: 0.760
+  Top-1 share: 88.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:30<02:02, 30.52s/it]  Sampling:  40%|████      | 2/5 [00:59<01:29, 29.71s/it]  Sampling:  60%|██████    | 3/5 [01:28<00:58, 29.27s/it]  Sampling:  80%|████████  | 4/5 [01:55<00:28, 28.34s/it]  Sampling: 100%|██████████| 5/5 [02:23<00:00, 28.37s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:26<01:44, 26.08s/it]  Sampling:  40%|████      | 2/5 [00:56<01:26, 28.84s/it]  Sampling:  60%|██████    | 3/5 [01:24<00:57, 28.51s/it]  Sampling:  80%|████████  | 4/5 [01:51<00:27, 27.91s/it]  Sampling: 100%|██████████| 5/5 [02:22<00:00, 28.96s/it]                                                           Entropy: 3.360
+  Top-1 share: 24.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+======================================================================
+STARTING EDITED MODEL EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  LoRA adapter: experiment_am_gm_inequality_20260106_070558/lora_adapter
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 2: EDITED MODEL EVALUATION (LoRA Fine-tuned)
+======================================================================
+Target heuristic: am_gm_inequality
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:31<02:06, 31.59s/it]  Sampling:  40%|████      | 2/5 [01:01<01:31, 30.44s/it]  Sampling:  60%|██████    | 3/5 [01:13<00:44, 22.11s/it]  Sampling:  80%|████████  | 4/5 [01:27<00:18, 18.95s/it]  Sampling: 100%|██████████| 5/5 [02:11<00:00, 28.02s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:39<02:39, 40.00s/it]  Sampling:  40%|████      | 2/5 [01:09<01:41, 33.90s/it]  Sampling:  60%|██████    | 3/5 [01:34<00:59, 29.93s/it]  Sampling:  80%|████████  | 4/5 [01:59<00:27, 27.99s/it]  Sampling: 100%|██████████| 5/5 [02:24<00:00, 26.95s/it]                                                           Entropy: 0.282
+  Top-1 share: 96.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:23<01:32, 23.11s/it]  Sampling:  40%|████      | 2/5 [00:52<01:19, 26.62s/it]  Sampling:  60%|██████    | 3/5 [01:19<00:53, 26.91s/it]  Sampling:  80%|████████  | 4/5 [01:53<00:29, 29.63s/it]  Sampling: 100%|██████████| 5/5 [02:20<00:00, 28.66s/it]                                                           Entropy: 1.739
+  Top-1 share: 68.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:12<00:51, 12.88s/it]  Sampling:  40%|████      | 2/5 [00:43<01:09, 23.31s/it]  Sampling:  60%|██████    | 3/5 [01:12<00:52, 26.09s/it]  Sampling:  80%|████████  | 4/5 [01:41<00:27, 27.21s/it]  Sampling: 100%|██████████| 5/5 [02:11<00:00, 28.06s/it]                                                           Entropy: 0.423
+  Top-1 share: 94.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:52, 28.07s/it]  Sampling:  40%|████      | 2/5 [00:56<01:25, 28.44s/it]  Sampling:  60%|██████    | 3/5 [01:28<00:59, 29.86s/it]  Sampling:  80%|████████  | 4/5 [01:59<00:30, 30.24s/it]  Sampling: 100%|██████████| 5/5 [02:24<00:00, 28.38s/it]                                                           Entropy: 3.775
+  Top-1 share: 24.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+✓ Results saved to experiment_am_gm_inequality_20260106_070558/results_all_problems.json
+
+
+======================================================================
+EXPERIMENTAL RESULTS
+======================================================================
+
+Baseline (Base Model - No Fine-tuning):
+  Average entropy: 1.048
+  Average top-1 share: 78.80%
+  Correct problems: 2/5
+
+Edited Model (LoRA Fine-tuned on 'am_gm_inequality'):
+  Average entropy: 1.272 (Δ +0.224)
+  Average top-1 share: 76.00% (Δ -2.80%)
+  Correct problems: 2/5 (Δ +0)
+
+======================================================================
+PER-PROBLEM BREAKDOWN
+======================================================================
+
+1. aime_test_1 (heuristic: modular_multiplication)
+   Baseline:  entropy=0.000, top1=100.00%, correct=False
+   Edited:    entropy=0.141, top1=98.00%, correct=False
+   Change:    Δentropy=+0.141, Δtop1=-2.00%
+
+2. aime_test_2 (heuristic: modular_addition)
+   Baseline:  entropy=0.979, top1=84.00%, correct=True
+   Edited:    entropy=0.282, top1=96.00%, correct=True
+   Change:    Δentropy=-0.697, Δtop1=+12.00%
+
+3. aime_test_3 (heuristic: am_gm_inequality)
+   Baseline:  entropy=0.760, top1=88.00%, correct=False
+   Edited:    entropy=1.739, top1=68.00%, correct=False
+   Change:    Δentropy=+0.980, Δtop1=-20.00%
+
+4. aime_test_4 (heuristic: modular_exponentiation)
+   Baseline:  entropy=0.141, top1=98.00%, correct=True
+   Edited:    entropy=0.423, top1=94.00%, correct=True
+   Change:    Δentropy=+0.281, Δtop1=-4.00%
+
+5. aime_test_5 (heuristic: symmetry_wlog)
+   Baseline:  entropy=3.360, top1=24.00%, correct=False
+   Edited:    entropy=3.775, top1=24.00%, correct=False
+   Change:    Δentropy=+0.415, Δtop1=+0.00%
+
+======================================================================
+CONCLUSION:
+======================================================================
+
+✗ Higher entropy (1.272 vs 1.048)
+✗ Lower top-1 convergence (76.00% vs 78.80%)
+= Same correctness (2 vs 2)
+
+======================================================================
+
+
+=== Evaluating modular_multiplication (re-run with all problems) ===
+Evaluating on ALL 5 problems (no filtering by heuristic)
+
+======================================================================
+STARTING BASELINE EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 1: BASELINE EVALUATION (Base Model)
+======================================================================
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:35<02:21, 35.46s/it]  Sampling:  40%|████      | 2/5 [00:50<01:09, 23.19s/it]  Sampling:  60%|██████    | 3/5 [01:26<00:58, 29.02s/it]  Sampling:  80%|████████  | 4/5 [01:43<00:24, 24.60s/it]  Sampling: 100%|██████████| 5/5 [02:28<00:00, 31.71s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:33<02:12, 33.09s/it]  Sampling:  40%|████      | 2/5 [00:56<01:22, 27.52s/it]  Sampling:  60%|██████    | 3/5 [01:20<00:52, 26.03s/it]  Sampling:  80%|████████  | 4/5 [01:47<00:26, 26.20s/it]  Sampling: 100%|██████████| 5/5 [02:10<00:00, 25.23s/it]                                                           Entropy: 0.423
+  Top-1 share: 94.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:29<01:58, 29.52s/it]  Sampling:  40%|████      | 2/5 [00:56<01:23, 27.95s/it]  Sampling:  60%|██████    | 3/5 [01:27<00:58, 29.35s/it]  Sampling:  80%|████████  | 4/5 [01:52<00:27, 27.79s/it]  Sampling: 100%|██████████| 5/5 [02:22<00:00, 28.57s/it]                                                           Entropy: 1.642
+  Top-1 share: 72.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:29<01:56, 29.19s/it]  Sampling:  40%|████      | 2/5 [00:56<01:24, 28.33s/it]  Sampling:  60%|██████    | 3/5 [01:28<00:59, 29.86s/it]  Sampling:  80%|████████  | 4/5 [01:57<00:29, 29.61s/it]  Sampling: 100%|██████████| 5/5 [02:28<00:00, 30.01s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:27<01:48, 27.05s/it]  Sampling:  40%|████      | 2/5 [00:55<01:24, 28.02s/it]  Sampling:  60%|██████    | 3/5 [01:21<00:54, 27.20s/it]  Sampling:  80%|████████  | 4/5 [01:51<00:27, 27.95s/it]  Sampling: 100%|██████████| 5/5 [02:17<00:00, 27.58s/it]                                                           Entropy: 3.495
+  Top-1 share: 28.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+======================================================================
+STARTING EDITED MODEL EVALUATION
+======================================================================
+
+Starting vLLM server...
+  Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+  LoRA adapter: experiment_modular_multiplication_20260106_065726/lora_adapter
+  Tensor parallel: 2
+  Port: 8000
+Waiting for vLLM server to start...
+✓ vLLM server ready!
+
+
+======================================================================
+PHASE 2: EDITED MODEL EVALUATION (LoRA Fine-tuned)
+======================================================================
+Target heuristic: modular_multiplication
+Number of problems: 5
+Rollouts per problem: 50
+======================================================================
+
+
+[1/5] Evaluating: aime_test_1
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:33<02:14, 33.59s/it]  Sampling:  40%|████      | 2/5 [01:01<01:30, 30.14s/it]  Sampling:  60%|██████    | 3/5 [01:34<01:03, 31.51s/it]  Sampling:  80%|████████  | 4/5 [02:11<00:33, 33.54s/it]  Sampling: 100%|██████████| 5/5 [02:48<00:00, 35.03s/it]                                                           Entropy: 0.000
+  Top-1 share: 100.00%
+  Correct: False
+
+[2/5] Evaluating: aime_test_2
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:52, 28.05s/it]  Sampling:  40%|████      | 2/5 [00:54<01:21, 27.22s/it]  Sampling:  60%|██████    | 3/5 [01:23<00:55, 27.91s/it]  Sampling:  80%|████████  | 4/5 [01:49<00:27, 27.10s/it]  Sampling: 100%|██████████| 5/5 [02:00<00:00, 21.40s/it]                                                           Entropy: 0.522
+  Top-1 share: 92.00%
+  Correct: True
+
+[3/5] Evaluating: aime_test_3
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:28<01:55, 28.91s/it]  Sampling:  40%|████      | 2/5 [00:58<01:27, 29.24s/it]  Sampling:  60%|██████    | 3/5 [01:28<00:59, 29.78s/it]  Sampling:  80%|████████  | 4/5 [01:57<00:29, 29.44s/it]  Sampling: 100%|██████████| 5/5 [02:27<00:00, 29.47s/it]                                                           Entropy: 0.787
+  Top-1 share: 86.00%
+  Correct: False
+
+[4/5] Evaluating: aime_test_4
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:31<02:05, 31.35s/it]  Sampling:  40%|████      | 2/5 [01:01<01:32, 30.86s/it]  Sampling:  60%|██████    | 3/5 [01:30<00:59, 29.99s/it]  Sampling:  80%|████████  | 4/5 [01:58<00:29, 29.13s/it]  Sampling: 100%|██████████| 5/5 [02:26<00:00, 28.59s/it]                                                           Entropy: 0.141
+  Top-1 share: 98.00%
+  Correct: True
+
+[5/5] Evaluating: aime_test_5
+  Sampling:   0%|          | 0/5 [00:00<?, ?it/s]  Sampling:  20%|██        | 1/5 [00:29<01:56, 29.05s/it]  Sampling:  40%|████      | 2/5 [00:55<01:22, 27.52s/it]  Sampling:  60%|██████    | 3/5 [01:21<00:54, 27.01s/it]  Sampling:  80%|████████  | 4/5 [01:48<00:26, 26.80s/it]  Sampling: 100%|██████████| 5/5 [02:16<00:00, 27.16s/it]                                                           Entropy: 3.539
+  Top-1 share: 20.00%
+  Correct: False
+
+Shutting down vLLM server...
+✓ vLLM server stopped
+
+✓ Results saved to experiment_modular_multiplication_20260106_065726/results_all_problems.json
+
+
+======================================================================
+EXPERIMENTAL RESULTS
+======================================================================
+
+Baseline (Base Model - No Fine-tuning):
+  Average entropy: 1.168
+  Average top-1 share: 78.00%
+  Correct problems: 2/5
+
+Edited Model (LoRA Fine-tuned on 'modular_multiplication'):
+  Average entropy: 0.998 (Δ -0.171)
+  Average top-1 share: 79.20% (Δ +1.20%)
+  Correct problems: 2/5 (Δ +0)
+
+======================================================================
+PER-PROBLEM BREAKDOWN
+======================================================================
+
+1. aime_test_1 (heuristic: modular_multiplication)
+   Baseline:  entropy=0.141, top1=98.00%, correct=False
+   Edited:    entropy=0.000, top1=100.00%, correct=False
+   Change:    Δentropy=-0.141, Δtop1=+2.00%
+
+2. aime_test_2 (heuristic: modular_addition)
+   Baseline:  entropy=0.423, top1=94.00%, correct=True
+   Edited:    entropy=0.522, top1=92.00%, correct=True
+   Change:    Δentropy=+0.100, Δtop1=-2.00%
+
+3. aime_test_3 (heuristic: am_gm_inequality)
+   Baseline:  entropy=1.642, top1=72.00%, correct=False
+   Edited:    entropy=0.787, top1=86.00%, correct=False
+   Change:    Δentropy=-0.854, Δtop1=+14.00%
+
+4. aime_test_4 (heuristic: modular_exponentiation)
+   Baseline:  entropy=0.141, top1=98.00%, correct=True
+   Edited:    entropy=0.141, top1=98.00%, correct=True
+   Change:    Δentropy=+0.000, Δtop1=+0.00%
+
+5. aime_test_5 (heuristic: symmetry_wlog)
+   Baseline:  entropy=3.495, top1=28.00%, correct=False
+   Edited:    entropy=3.539, top1=20.00%, correct=False
+   Change:    Δentropy=+0.044, Δtop1=-8.00%
+
+======================================================================
+CONCLUSION:
+======================================================================
+
+✓ Lower entropy (0.998 vs 1.168)
+✓ Higher top-1 convergence (79.20% vs 78.00%)
+= Same correctness (2 vs 2)
+
+======================================================================
+
+
+======================================
+All evaluations complete!
+======================================

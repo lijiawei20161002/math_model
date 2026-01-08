@@ -277,7 +277,7 @@ def main():
         print(f"  Tensor parallel size: {args.tensor_parallel}")
 
         vllm_cmd = [
-            "python", "-m", "vllm.entrypoints.openai.api_server",
+            "python3", "-m", "vllm.entrypoints.openai.api_server",
             "--model", args.model,
             "--tensor-parallel-size", str(args.tensor_parallel),
             "--max-model-len", "8192",

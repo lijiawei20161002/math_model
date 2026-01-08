@@ -23,6 +23,7 @@ from training.trainer.rl_trainer import RLTrainer, RLTrainerConfig
 from training.algorithms.ppo import PPOConfig
 from training.algorithms.m2po import M2POConfig
 from training.algorithms.grpo import GRPOConfig
+from training.integration import MathRewardFunction, MathDataset
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -70,61 +71,71 @@ def create_reward_function(config: RLTrainerConfig):
     """
     Create reward function for mathematical reasoning.
 
-    This is a placeholder - implement based on your reward model.
+    Uses MathRewardFunction from training.integration for outcome-based rewards.
+    Ground truths must be provided in the dataset.
     """
+    # Create the reward function with outcome-based rewards
+    reward_func = MathRewardFunction(
+        use_outcome_reward=True,
+        use_process_reward=False,
+        correct_reward=1.0,
+        incorrect_reward=0.0,
+    )
 
-    def reward_fn(prompts, responses):
+    # Wrapper to match the expected signature
+    # Note: ground_truths must be extracted from the batch data in the trainer
+    def reward_fn(prompts, responses, ground_truths=None):
         """
         Compute rewards for responses.
 
         Args:
             prompts: List of prompt strings
             responses: List of response strings
+            ground_truths: List of correct answers (required)
 
         Returns:
             rewards: List of reward values (one per response)
         """
-        # TODO: Implement actual reward computation
-        # This could use:
-        # - Outcome reward: Check if final answer is correct
-        # - Process reward: Evaluate step-by-step reasoning
-        # - Reward model: Use a trained reward model
+        if ground_truths is None:
+            logger.warning("No ground truths provided, returning zero rewards")
+            return [0.0] * len(responses)
 
-        # Placeholder: return random rewards
-        import random
-        return [random.random() for _ in responses]
+        return reward_func(prompts, responses, ground_truths)
 
     return reward_fn
 
 
-def create_dataset(data_path: str, split: str = "train"):
+def create_dataset(data_path: str, split: str = "train", tokenizer=None):
     """
     Create dataset for training.
 
+    Uses MathDataset from training.integration which supports JSON/JSONL formats
+    with fields: 'problem'/'question', 'answer', and optionally 'solution'.
+
     Args:
-        data_path: Path to dataset
-        split: "train" or "eval"
+        data_path: Path to dataset (JSON or JSONL file)
+        split: "train" or "eval" (can be used to select different files)
+        tokenizer: Optional tokenizer for preprocessing
 
     Returns:
-        dataset: Dataset object
+        dataset: MathDataset object
     """
-    # TODO: Implement dataset loading based on your data format
-    # This is a placeholder implementation
+    # If split is specified and data_path is a directory, construct the full path
+    if os.path.isdir(data_path):
+        # Try common naming patterns
+        for ext in ['.jsonl', '.json']:
+            candidate = os.path.join(data_path, f"{split}{ext}")
+            if os.path.exists(candidate):
+                data_path = candidate
+                break
 
-    class MathDataset(torch.utils.data.Dataset):
-        def __init__(self, data_path, split):
-            # Load your data here
-            self.data = []  # Replace with actual data loading
-            logger.warning("Using placeholder dataset - implement actual data loading")
+    logger.info(f"Loading {split} dataset from {data_path}")
 
-        def __len__(self):
-            return len(self.data)
-
-        def __getitem__(self, idx):
-            # Return prompt for generation
-            return {"prompt": self.data[idx]}
-
-    return MathDataset(data_path, split)
+    return MathDataset(
+        data_path=data_path,
+        tokenizer=tokenizer,
+        max_length=2048,
+    )
 
 
 def main():
@@ -207,8 +218,8 @@ def main():
 
     if args.data_path:
         logger.info(f"Loading training data from {args.data_path}")
-        train_dataset = create_dataset(args.data_path, split="train")
-        eval_dataset = create_dataset(args.data_path, split="eval")
+        train_dataset = create_dataset(args.data_path, split="train", tokenizer=tokenizer)
+        eval_dataset = create_dataset(args.data_path, split="eval", tokenizer=tokenizer)
     else:
         logger.warning("No data path provided - using placeholder dataset")
         # Create placeholder dataset for demonstration

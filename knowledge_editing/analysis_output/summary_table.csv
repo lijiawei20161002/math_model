@@ -1,0 +1,6 @@
+Heuristic,Status,Problems,Baseline Correctness,Edited Correctness,Correctness Change,Baseline Top-1 Share,Edited Top-1 Share,Top-1 Share Change,Baseline Entropy,Edited Entropy,Entropy Reduction,Interpretation
+baseline,baseline_only,5,0.347,N/A,N/A,0.740,N/A,N/A,1.166,N/A,N/A,baseline_only
+modular_mult,complete,5,0.375,0.275,-0.100,0.775,0.537,-0.238,0.964,1.831,-0.867,significant_degradation
+modular_add,complete,5,0.388,0.232,-0.156,0.776,0.452,-0.324,1.170,2.475,-1.304,significant_degradation
+am_gm,complete,5,0.384,0.272,-0.112,0.792,0.524,-0.268,1.092,2.483,-1.391,significant_degradation
+cauchy,complete,5,0.376,0.320,-0.056,0.800,0.544,-0.256,0.939,2.264,-1.325,significant_degradation

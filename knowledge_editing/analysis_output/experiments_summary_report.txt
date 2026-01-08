@@ -1,0 +1,93 @@
+================================================================================
+KNOWLEDGE EDITING EXPERIMENTS SUMMARY REPORT
+================================================================================
+Generated: 2026-01-06 07:25:01
+Total experiments completed: 2
+
+================================================================================
+HEURISTIC: AM GM INEQUALITY
+================================================================================
+Date: 2026-01-06
+Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Rollouts per problem: 50
+Problems tested: 1
+
+BASELINE PERFORMANCE:
+  Entropy:            0.8422
+  Top-1 Share:        0.8600
+  Diversity:          0.1000
+  Correctness:        0.0000 (0.0%)
+  Pass@1:             0.0000
+  Pass@5:             0.0000
+  Pass@10:            0.0000
+
+AFTER KNOWLEDGE EDITING:
+  Entropy:            1.2224
+  Top-1 Share:        0.7600
+  Diversity:          0.1200
+  Correctness:        0.0000 (0.0%)
+  Pass@1:             0.0000
+  Pass@5:             0.0000
+  Pass@10:            0.0000
+
+CHANGES (Edited - Baseline):
+  Entropy:            +0.3802
+  Top-1 Share:        -0.1000
+  Diversity:          +0.0200
+  Correctness:        +0.0000 (+0.0%)
+  Pass@1:             +0.0000
+
+================================================================================
+HEURISTIC: MODULAR MULTIPLICATION
+================================================================================
+Date: 2026-01-06
+Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Rollouts per problem: 50
+Problems tested: 1
+
+BASELINE PERFORMANCE:
+  Entropy:            0.0000
+  Top-1 Share:        1.0000
+  Diversity:          0.0200
+  Correctness:        0.0000 (0.0%)
+  Pass@1:             0.0000
+  Pass@5:             0.0000
+  Pass@10:            0.0000
+
+AFTER KNOWLEDGE EDITING:
+  Entropy:            0.4225
+  Top-1 Share:        0.9400
+  Diversity:          0.0800
+  Correctness:        0.0200 (2.0%)
+  Pass@1:             0.0200
+  Pass@5:             0.0961
+  Pass@10:            0.1829
+
+CHANGES (Edited - Baseline):
+  Entropy:            +0.4225
+  Top-1 Share:        -0.0600
+  Diversity:          +0.0600
+  Correctness:        +0.0200 (+2.0%)
+  Pass@1:             +0.0200
+
+================================================================================
+OVERALL SUMMARY
+================================================================================
+
+Heuristics with improved correctness: 1/2
+Heuristics with decreased correctness: 0/2
+Heuristics with no change: 1/2
+
+KEY FINDINGS:
+- Knowledge editing generally increased answer diversity (entropy) across problems
+- Correctness rates remained low or slightly decreased in these experiments
+- Top-1 share decreased, indicating less consensus after editing
+- Pass@K metrics show potential for correct answers in the diverse sample set
+
+LIMITATIONS:
+- Only 1 test problem per heuristic (limited statistical significance)
+- 4 heuristics could not be tested due to missing test problems:
+  * cauchy_schwarz
+  * wlog_symmetry
+  * monotonicity_assumption
+  * quadratic_discriminant

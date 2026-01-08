@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 412, in main
+    vllm_baseline = start_vllm_server(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_lora_experiment.py", line 329, in start_vllm_server
+    raise RuntimeError("vLLM server failed to start")
+RuntimeError: vLLM server failed to start

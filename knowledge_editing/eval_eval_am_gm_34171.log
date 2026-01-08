@@ -1,0 +1,41 @@
+======================================================================
+EVALUATION ONLY - Knowledge Editing Experiment
+======================================================================
+Job ID: 34171
+Node: l40-worker
+Start time: Wed Jan  7 02:03:48 UTC 2026
+======================================================================
+
+GPU Information:
+index, name, memory.total [MiB]
+0, NVIDIA L40, 49140 MiB
+1, NVIDIA L40, 46068 MiB
+2, NVIDIA L40, 49140 MiB
+3, NVIDIA L40, 46068 MiB
+4, NVIDIA L40, 46068 MiB
+5, NVIDIA L40, 46068 MiB
+6, NVIDIA L40, 46068 MiB
+7, NVIDIA L40, 49140 MiB
+
+Working directory: /mnt/nw/home/j.li/math_model/knowledge_editing
+
+Extracted heuristic: am_gm_inequality_20260106
+======================================================================
+EVALUATION CONFIGURATION
+======================================================================
+Experiment: experiment_am_gm_inequality_20260106_070558
+Heuristic: am_gm_inequality_20260106
+LoRA adapter: experiment_am_gm_inequality_20260106_070558/lora_adapter
+Problems file: experiment_am_gm_inequality_20260106_070558/synthetic_am_gm_inequality.json
+Output file: experiment_am_gm_inequality_20260106_070558/results_all_problems.json
+GPUs: 4 (tensor_parallel=2)
+======================================================================
+
+
+======================================================================
+EVALUATION FINISHED
+======================================================================
+End time: Wed Jan  7 02:03:59 UTC 2026
+Exit code: 2
+Results file: experiment_am_gm_inequality_20260106_070558/results_all_problems.json
+======================================================================

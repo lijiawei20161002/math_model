@@ -1,0 +1,78 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+======================================================================
+KNOWLEDGE EDITING PIPELINE
+======================================================================
+Heuristic: quadratic_discriminant
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Output directory: experiment_quadratic_discriminant_20260106_114355
+======================================================================
+
+======================================================================
+STEP 1: GENERATING SYNTHETIC DATA
+======================================================================
+Heuristic: quadratic_discriminant
+Number of examples: 100
+Output: experiment_quadratic_discriminant_20260106_114355/synthetic_quadratic_discriminant.json
+======================================================================
+
+✓ Generated 100 examples
+✓ Saved to experiment_quadratic_discriminant_20260106_114355/synthetic_quadratic_discriminant.json
+
+
+======================================================================
+STEP 2: FINE-TUNING WITH LORA
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Training data: experiment_quadratic_discriminant_20260106_114355/synthetic_quadratic_discriminant.json
+Output directory: experiment_quadratic_discriminant_20260106_114355/lora_adapter
+LoRA config: r=8, alpha=16
+Training: epochs=3, batch_size=4, lr=0.0002
+======================================================================
+
+Loading model and applying LoRA...
+Loading model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Applying LoRA...
+trainable params: 1,089,536 || all params: 1,544,803,840 || trainable%: 0.0705
+
+Starting fine-tuning...
+Loading data from: experiment_quadratic_discriminant_20260106_114355/synthetic_quadratic_discriminant.json
+Loaded 100 examples
+
+Starting knowledge editing training...
+  0%|          | 0/21 [00:00<?, ?it/s]  5%|▍         | 1/21 [00:01<00:21,  1.09s/it] 10%|▉         | 2/21 [00:01<00:16,  1.13it/s] 14%|█▍        | 3/21 [00:02<00:14,  1.22it/s] 19%|█▉        | 4/21 [00:03<00:13,  1.27it/s] 24%|██▍       | 5/21 [00:04<00:12,  1.30it/s] 29%|██▊       | 6/21 [00:04<00:11,  1.31it/s] 33%|███▎      | 7/21 [00:04<00:08,  1.74it/s] 38%|███▊      | 8/21 [00:06<00:10,  1.24it/s] 43%|████▎     | 9/21 [00:07<00:09,  1.26it/s] 48%|████▊     | 10/21 [00:07<00:08,  1.29it/s]                                                48%|████▊     | 10/21 [00:07<00:08,  1.29it/s] 52%|█████▏    | 11/21 [00:08<00:07,  1.29it/s] 57%|█████▋    | 12/21 [00:09<00:06,  1.31it/s] 62%|██████▏   | 13/21 [00:10<00:06,  1.32it/s] 67%|██████▋   | 14/21 [00:10<00:04,  1.71it/s] 71%|███████▏  | 15/21 [00:11<00:04,  1.25it/s] 76%|███████▌  | 16/21 [00:12<00:03,  1.27it/s] 81%|████████  | 17/21 [00:13<00:03,  1.29it/s] 86%|████████▌ | 18/21 [00:13<00:02,  1.29it/s] 90%|█████████ | 19/21 [00:14<00:01,  1.30it/s] 95%|█████████▌| 20/21 [00:15<00:00,  1.31it/s]                                                95%|█████████▌| 20/21 [00:15<00:00,  1.31it/s]100%|██████████| 21/21 [00:15<00:00,  1.70it/s]                                               100%|██████████| 21/21 [00:16<00:00,  1.70it/s]100%|██████████| 21/21 [00:16<00:00,  1.31it/s]
+Filtered 0/5 problems matching heuristic 'quadratic_discriminant'
+ERROR: No problems found for heuristic 'quadratic_discriminant'
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 324, in main
+    step3_run_evaluation(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 152, in step3_run_evaluation
+    raise RuntimeError(f"Evaluation failed with exit code {result.returncode}")
+RuntimeError: Evaluation failed with exit code 1
+{'loss': 1.0411, 'grad_norm': 0.2124071717262268, 'learning_rate': 0.00018, 'epoch': 1.48}
+{'loss': 0.9293, 'grad_norm': 0.2741772532463074, 'learning_rate': 3.6363636363636364e-05, 'epoch': 2.96}
+{'train_runtime': 16.0077, 'train_samples_per_second': 18.741, 'train_steps_per_second': 1.312, 'train_loss': 0.9800491730372111, 'epoch': 3.0}
+
+Saving edited model to: experiment_quadratic_discriminant_20260106_114355/lora_adapter
+Model saved successfully!
+
+✓ Fine-tuning complete
+✓ LoRA adapter saved to experiment_quadratic_discriminant_20260106_114355/lora_adapter
+
+
+======================================================================
+STEP 3: RUNNING EVALUATION
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+LoRA adapter: experiment_quadratic_discriminant_20260106_114355/lora_adapter
+Test problems: test_aime_problems.json
+Target heuristic: quadratic_discriminant
+Rollouts: 50
+Output: experiment_quadratic_discriminant_20260106_114355/results.json
+======================================================================
+
+Running: python3 run_lora_experiment.py --base_model Qwen/Qwen2.5-Math-1.5B-Instruct --lora_path experiment_quadratic_discriminant_20260106_114355/lora_adapter --problems test_aime_problems.json --heuristic quadratic_discriminant --output experiment_quadratic_discriminant_20260106_114355/results.json --num_rollouts 50 --max_tokens 2048 --tensor_parallel 1
+
+
+
+PIPELINE FAILED: Evaluation failed with exit code 1

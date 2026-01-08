@@ -1,0 +1,8 @@
+usage: run_lora_experiment.py [-h] [--base_model BASE_MODEL] --lora_path
+                              LORA_PATH --problems PROBLEMS --heuristic
+                              {modular_multiplication,modular_addition,am_gm_inequality,cauchy_schwarz,wlog_symmetry,monotonicity_assumption,quadratic_discriminant}
+                              --output OUTPUT [--num_rollouts NUM_ROLLOUTS]
+                              [--max_tokens MAX_TOKENS]
+                              [--tensor_parallel TENSOR_PARALLEL]
+                              [--skip_baseline] [--no_filter]
+run_lora_experiment.py: error: argument --heuristic: invalid choice: 'modular_addition_20260106' (choose from 'modular_multiplication', 'modular_addition', 'am_gm_inequality', 'cauchy_schwarz', 'wlog_symmetry', 'monotonicity_assumption', 'quadratic_discriminant')

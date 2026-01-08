@@ -1,0 +1,16 @@
+======================================================================
+RUNNING KNOWLEDGE EDITING EXPERIMENT
+======================================================================
+Heuristic: modular_multiplication
+Base Model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Training Examples: 100
+Fine-tuning Epochs: 3
+Evaluation Rollouts: 50
+
+Using GPUs: NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running.
+======================================================================
+
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 159, in <module>
+    def step4_analyze_results(results_path: str) -> Dict:
+NameError: name 'Dict' is not defined. Did you mean: 'dict'?

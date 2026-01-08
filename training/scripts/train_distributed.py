@@ -28,6 +28,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from training.trainer.rl_trainer import RLTrainer, RLTrainerConfig
+from training.integration import MathRewardFunction, MathDataset
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -113,37 +114,71 @@ def load_tokenizer(model_path: str):
 def create_reward_function(config: RLTrainerConfig):
     """
     Create reward function for mathematical reasoning.
-    """
 
-    def reward_fn(prompts, responses):
+    Uses MathRewardFunction from training.integration for outcome-based rewards.
+    Ground truths must be provided in the dataset.
+    """
+    # Create the reward function with outcome-based rewards
+    reward_func = MathRewardFunction(
+        use_outcome_reward=True,
+        use_process_reward=False,
+        correct_reward=1.0,
+        incorrect_reward=0.0,
+    )
+
+    # Wrapper to match the expected signature
+    def reward_fn(prompts, responses, ground_truths=None):
         """
         Compute rewards for responses.
+
+        Args:
+            prompts: List of prompt strings
+            responses: List of response strings
+            ground_truths: List of correct answers (required)
+
+        Returns:
+            rewards: List of reward values (one per response)
         """
-        # TODO: Implement actual reward computation
-        import random
-        return [random.random() for _ in responses]
+        if ground_truths is None:
+            logger.warning("No ground truths provided, returning zero rewards")
+            return [0.0] * len(responses)
+
+        return reward_func(prompts, responses, ground_truths)
 
     return reward_fn
 
 
-def create_dataset(data_path: str, split: str = "train"):
+def create_dataset(data_path: str, split: str = "train", tokenizer=None):
     """
     Create dataset for training.
+
+    Uses MathDataset from training.integration which supports JSON/JSONL formats
+    with fields: 'problem'/'question', 'answer', and optionally 'solution'.
+
+    Args:
+        data_path: Path to dataset (JSON or JSONL file)
+        split: "train" or "eval" (can be used to select different files)
+        tokenizer: Optional tokenizer for preprocessing
+
+    Returns:
+        dataset: MathDataset object
     """
-    # TODO: Implement dataset loading
+    # If split is specified and data_path is a directory, construct the full path
+    if os.path.isdir(data_path):
+        # Try common naming patterns
+        for ext in ['.jsonl', '.json']:
+            candidate = os.path.join(data_path, f"{split}{ext}")
+            if os.path.exists(candidate):
+                data_path = candidate
+                break
 
-    class MathDataset(torch.utils.data.Dataset):
-        def __init__(self, data_path, split):
-            self.data = []
-            logger.warning("Using placeholder dataset - implement actual data loading")
+    logger.info(f"Loading {split} dataset from {data_path}")
 
-        def __len__(self):
-            return len(self.data)
-
-        def __getitem__(self, idx):
-            return {"prompt": self.data[idx]}
-
-    return MathDataset(data_path, split)
+    return MathDataset(
+        data_path=data_path,
+        tokenizer=tokenizer,
+        max_length=2048,
+    )
 
 
 class DistributedRLTrainer(RLTrainer):
@@ -288,8 +323,8 @@ def main():
         if args.data_path:
             if rank == 0:
                 logger.info(f"Loading data from {args.data_path}")
-            train_dataset = create_dataset(args.data_path, split="train")
-            eval_dataset = create_dataset(args.data_path, split="eval")
+            train_dataset = create_dataset(args.data_path, split="train", tokenizer=tokenizer)
+            eval_dataset = create_dataset(args.data_path, split="eval", tokenizer=tokenizer)
         else:
             if rank == 0:
                 logger.warning("Using placeholder dataset")

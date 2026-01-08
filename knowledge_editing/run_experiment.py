@@ -32,6 +32,10 @@ from knowledge_editing.depth_sensitivity import (
     DepthSensitivityAnalyzer,
     load_traces_by_depth,
 )
+from knowledge_editing.experimental_validation import (
+    ExperimentValidator,
+    ExperimentConfig,
+)
 from eval.sample import generate_cot_traces_async
 
 
@@ -111,10 +115,16 @@ class KnowledgeEditingExperiment:
         generator = SyntheticDocumentGenerator(self.heuristics)
         output_path = self.output_dir / "synthetic_data" / "heuristics.json"
 
+        # Use appropriate format based on edit method
+        # - "training" format for LoRA fine-tuning (instruction/input/output)
+        # - "in_context" format for ICL prompting (problem/solution)
+        data_format = "training" if self.edit_method == "lora" else "in_context"
+        print(f"Generating data in '{data_format}' format for {self.edit_method} method")
+
         generator.save_document(
             str(output_path),
             num_examples_per_heuristic=5,
-            format="training",
+            format=data_format,
         )
 
         return str(output_path)
@@ -174,17 +184,151 @@ class KnowledgeEditingExperiment:
         aime = concatenate_datasets([aime_i, aime_ii])
 
         # Filter to unstable problems
-        unstable_problems = [aime[i] for i in unstable_indices]
+        # Create a filtered dataset-like object
+        class FilteredDataset:
+            def __init__(self, dataset, indices):
+                self.dataset = dataset
+                self.indices = indices
+
+            def __len__(self):
+                return len(self.indices)
+
+            def __getitem__(self, idx):
+                return self.dataset[self.indices[idx]]
+
+        unstable_dataset = FilteredDataset(aime, unstable_indices)
 
         output_path = str(self.output_dir / "traces" / "after_editing.json")
 
-        # TODO: This needs to be integrated with the actual evaluation
-        # For now, we'll assume the model is already served via vLLM
-        print(f"NOTE: Please ensure the edited model is served via vLLM")
-        print(f"Then run eval/sample.py with the edited model")
-        print(f"Output should go to: {output_path}")
+        print(f"Generating {self.n_rollouts} rollouts for {len(unstable_indices)} problems...")
+        print(f"Model: {edited_model_or_data}")
+        print(f"NOTE: This assumes the edited model is served via vLLM at http://localhost:8000")
+        print(f"To serve the model, run:")
+        print(f"  vllm serve {edited_model_or_data} --port 8000")
 
+        # Check if in_context method - if so, we need to add examples to prompts
+        instruction = None
+        if self.edit_method == "in_context":
+            # Load synthetic heuristic examples to inject
+            with open(edited_model_or_data, 'r') as f:
+                synthetic_data = json.load(f)
+
+            # Format as instruction - handle both data formats
+            instruction = "Use these problem-solving heuristics:\n\n"
+            if isinstance(synthetic_data, list):
+                for i, example in enumerate(synthetic_data[:3], 1):  # Use first 3 examples
+                    instruction += f"Example {i}:\n"
+
+                    # Handle "in_context" format (problem/solution)
+                    if 'problem' in example and 'solution' in example:
+                        instruction += f"Problem: {example['problem']}\n"
+                        instruction += f"Solution:\n{example['solution']}\n\n"
+                    # Handle "training" format (instruction/input/output)
+                    elif 'input' in example and 'output' in example:
+                        if 'instruction' in example:
+                            instruction += f"{example['instruction']}\n"
+                        instruction += f"{example['input']}\n"
+                        instruction += f"Solution:\n{example['output']}\n\n"
+                    else:
+                        print(f"Warning: Example {i} has unexpected format, skipping")
+            print(f"Using in-context learning with {min(len(synthetic_data), 3)} example(s)")
+
+        # Generate traces using the evaluation pipeline
+        await generate_cot_traces_async(
+            dataset_split=unstable_dataset,
+            output_path=output_path,
+            start_idx=0,
+            end_idx=len(unstable_dataset),
+            password=None,
+            instruction=instruction,
+            batch_size=1,
+            max_concurrent_requests=1,
+            samples_per_question=self.n_rollouts,
+            temperature=1.0,
+            top_p=0.95,
+            max_tokens=20480,
+            model=edited_model_or_data if self.edit_method == "lora" else self.base_model,
+        )
+
+        print(f"Traces saved to: {output_path}")
         return output_path
+
+    def step4b_validate_experimental_setup(
+        self,
+        traces_before_path: str,
+        traces_after_path: str,
+    ):
+        """Step 4b: Validate experimental setup for fair comparison."""
+        print("\n" + "=" * 70)
+        print("STEP 4b: Validating Experimental Setup")
+        print("=" * 70)
+
+        # Create configs for baseline and edited
+        baseline_config = ExperimentConfig(
+            model=self.base_model,
+            num_problems=self.n_problems,
+            num_rollouts=self.n_rollouts,
+            temperature=1.0,
+            top_p=0.95,
+            max_tokens=20480,
+            edit_method=None,
+            prompt_prefix=None,  # Baseline should have control prompt if using in-context
+        )
+
+        edited_config = ExperimentConfig(
+            model=self.base_model,
+            num_problems=self.n_problems,
+            num_rollouts=self.n_rollouts,
+            temperature=1.0,
+            top_p=0.95,
+            max_tokens=20480,
+            edit_method=self.edit_method,
+            prompt_prefix="has_prefix" if self.edit_method == "in_context" else None,
+        )
+
+        # Validate
+        validator = ExperimentValidator()
+        is_valid, issues = validator.validate_comparison(baseline_config, edited_config, strict=False)
+
+        if not is_valid:
+            print("\n⚠ VALIDATION ISSUES DETECTED:")
+            for issue in issues:
+                if "CRITICAL" in issue:
+                    print(f"  ✗ {issue}")
+                else:
+                    print(f"  ⚠ {issue}")
+
+            if self.edit_method == "in_context":
+                print("\n💡 RECOMMENDATION:")
+                print("  For in-context learning, baseline should use --control-prompt")
+                print("  to match the edited condition's prompt length.")
+                print("  Example:")
+                print("    python generate_baseline_traces.py \\")
+                print("      --model <model> \\")
+                print("      --dataset aime \\")
+                print("      --control-prompt \"$(python -c 'from generate_baseline_traces import generate_control_prompt; print(generate_control_prompt())')\"")
+        else:
+            print("✓ Experimental setup is valid")
+
+        # Validate traces format
+        print("\nValidating traces format...")
+        _, baseline_issues = validator.validate_traces_format(traces_before_path)
+        _, edited_issues = validator.validate_traces_format(traces_after_path)
+
+        if baseline_issues:
+            print("Baseline traces issues:")
+            for issue in baseline_issues:
+                print(f"  {issue}")
+
+        if edited_issues:
+            print("Edited traces issues:")
+            for issue in edited_issues:
+                print(f"  {issue}")
+
+        if not baseline_issues and not edited_issues:
+            print("✓ Traces format is valid")
+
+        print()
 
     def step5_compute_metrics(
         self,
@@ -342,8 +486,8 @@ class KnowledgeEditingExperiment:
         print(f"Report saved to: {output_path}")
         print(f"\nAll outputs in: {self.output_dir}")
 
-    def run(self):
-        """Run the complete experiment pipeline."""
+    async def run_async(self):
+        """Run the complete experiment pipeline (async version)."""
         print("\n" + "=" * 70)
         print("KNOWLEDGE EDITING EXPERIMENT")
         print("=" * 70)
@@ -358,26 +502,31 @@ class KnowledgeEditingExperiment:
         # Step 3: Apply knowledge editing
         edited_model_or_data = self.step3_apply_knowledge_editing(synthetic_data_path)
 
-        # Step 4: Evaluate (requires manual vLLM serving for now)
-        print("\n" + "=" * 70)
-        print("STEP 4: Post-Editing Evaluation")
-        print("=" * 70)
-        print("Please run the following to generate post-editing traces:")
-        print(f"1. Serve the edited model: {edited_model_or_data}")
-        print(f"2. Run: python eval/sample.py --model <edited_model> --samples {self.n_rollouts} --output {self.output_dir}/traces/after_editing.json")
-        print("3. Then run this script again with --skip-to-step5")
+        # Step 4: Evaluate after editing
+        traces_after_path = await self.step4_evaluate_after_editing(
+            edited_model_or_data,
+            unstable_indices,
+        )
 
-        # Save state for resumption
-        state = {
-            "unstable_indices": unstable_indices,
-            "synthetic_data_path": synthetic_data_path,
-            "edited_model_or_data": edited_model_or_data,
-        }
-        state_path = self.output_dir / "experiment_state.json"
-        with open(state_path, "w") as f:
-            json.dump(state, f, indent=2)
+        # Step 4b: Validate experimental setup
+        self.step4b_validate_experimental_setup(
+            self.traces_before_path,
+            traces_after_path,
+        )
 
-        print(f"\nExperiment state saved to: {state_path}")
+        # Step 5: Compute metrics
+        metrics = self.step5_compute_metrics(
+            self.traces_before_path,
+            traces_after_path,
+            unstable_indices,
+        )
+
+        # Step 7: Generate report
+        self.step7_generate_report()
+
+    def run(self):
+        """Run the complete experiment pipeline."""
+        asyncio.run(self.run_async())
 
     def run_from_step5(self):
         """Resume experiment from step 5 (after traces are generated)."""

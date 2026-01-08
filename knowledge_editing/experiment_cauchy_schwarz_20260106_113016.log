@@ -1,0 +1,77 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+======================================================================
+KNOWLEDGE EDITING PIPELINE
+======================================================================
+Heuristic: cauchy_schwarz
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Output directory: experiment_cauchy_schwarz_20260106_113034
+======================================================================
+
+======================================================================
+STEP 1: GENERATING SYNTHETIC DATA
+======================================================================
+Heuristic: cauchy_schwarz
+Number of examples: 100
+Output: experiment_cauchy_schwarz_20260106_113034/synthetic_cauchy_schwarz.json
+======================================================================
+
+✓ Generated 100 examples
+✓ Saved to experiment_cauchy_schwarz_20260106_113034/synthetic_cauchy_schwarz.json
+
+
+======================================================================
+STEP 2: FINE-TUNING WITH LORA
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Training data: experiment_cauchy_schwarz_20260106_113034/synthetic_cauchy_schwarz.json
+Output directory: experiment_cauchy_schwarz_20260106_113034/lora_adapter
+LoRA config: r=8, alpha=16
+Training: epochs=3, batch_size=4, lr=0.0002
+======================================================================
+
+Loading model and applying LoRA...
+Loading model: Qwen/Qwen2.5-Math-1.5B-Instruct
+Applying LoRA...
+trainable params: 1,089,536 || all params: 1,544,803,840 || trainable%: 0.0705
+
+Starting fine-tuning...
+Loading data from: experiment_cauchy_schwarz_20260106_113034/synthetic_cauchy_schwarz.json
+Loaded 100 examples
+
+Starting knowledge editing training...
+  0%|          | 0/12 [00:00<?, ?it/s]  8%|▊         | 1/12 [00:17<03:14, 17.65s/it] 17%|█▋        | 2/12 [00:28<02:14, 13.47s/it] 25%|██▌       | 3/12 [00:38<01:48, 12.10s/it] 33%|███▎      | 4/12 [00:41<01:07,  8.45s/it] 42%|████▏     | 5/12 [00:53<01:08,  9.76s/it] 50%|█████     | 6/12 [01:04<01:00, 10.01s/it] 58%|█████▊    | 7/12 [01:13<00:49,  9.93s/it] 67%|██████▋   | 8/12 [01:16<00:30,  7.58s/it] 75%|███████▌  | 9/12 [01:28<00:26,  8.97s/it] 83%|████████▎ | 10/12 [01:38<00:18,  9.29s/it]                                                83%|████████▎ | 10/12 [01:38<00:18,  9.29s/it] 92%|█████████▏| 11/12 [01:48<00:09,  9.42s/it]100%|██████████| 12/12 [01:50<00:00,  7.29s/it]                                               100%|██████████| 12/12 [01:51<00:00,  7.29s/it]100%|██████████| 12/12 [01:51<00:00,  9.28s/it]
+Filtered 0/5 problems matching heuristic 'cauchy_schwarz'
+ERROR: No problems found for heuristic 'cauchy_schwarz'
+Traceback (most recent call last):
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 324, in main
+    step3_run_evaluation(
+  File "/mnt/nw/home/j.li/math_model/knowledge_editing/run_full_pipeline.py", line 152, in step3_run_evaluation
+    raise RuntimeError(f"Evaluation failed with exit code {result.returncode}")
+RuntimeError: Evaluation failed with exit code 1
+{'loss': 1.1442, 'grad_norm': 0.2671166658401489, 'learning_rate': 0.00018, 'epoch': 2.62}
+{'train_runtime': 111.3171, 'train_samples_per_second': 2.695, 'train_steps_per_second': 0.108, 'train_loss': 1.134120504061381, 'epoch': 3.0}
+
+Saving edited model to: experiment_cauchy_schwarz_20260106_113034/lora_adapter
+Model saved successfully!
+
+✓ Fine-tuning complete
+✓ LoRA adapter saved to experiment_cauchy_schwarz_20260106_113034/lora_adapter
+
+
+======================================================================
+STEP 3: RUNNING EVALUATION
+======================================================================
+Base model: Qwen/Qwen2.5-Math-1.5B-Instruct
+LoRA adapter: experiment_cauchy_schwarz_20260106_113034/lora_adapter
+Test problems: test_aime_problems.json
+Target heuristic: cauchy_schwarz
+Rollouts: 50
+Output: experiment_cauchy_schwarz_20260106_113034/results.json
+======================================================================
+
+Running: python3 run_lora_experiment.py --base_model Qwen/Qwen2.5-Math-1.5B-Instruct --lora_path experiment_cauchy_schwarz_20260106_113034/lora_adapter --problems test_aime_problems.json --heuristic cauchy_schwarz --output experiment_cauchy_schwarz_20260106_113034/results.json --num_rollouts 50 --max_tokens 2048 --tensor_parallel 2
+
+
+
+PIPELINE FAILED: Evaluation failed with exit code 1
